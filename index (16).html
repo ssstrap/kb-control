@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>КБ Контроль</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏗</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════
+   THEME: DARK (default)
+   ══════════════════════════════════════ */
+[data-theme="dark"] {
+  --bg: #1a1310;
+  --bg2: #0f0c0a;
+  --surface: #241e19;
+  --surface2: #2e261f;
+  --surface3: #382f26;
+  --border: #3d3229;
+  --border2: #4a3d32;
+  --accent: #d4a96a;
+  --accent2: #c49555;
+  --accent3: #e8c48a;
+  --accent-glow: rgba(212, 169, 106, 0.15);
+  --accent-glow2: rgba(212, 169, 106, 0.08);
+  --text: #f0e6d8;
+  --text2: #c8b9a6;
+  --muted: #7a6b5a;
+  --muted2: #5a4d3f;
+  --danger: #c45e5e;
+  --danger-bg: rgba(196, 94, 94, 0.1);
+  --success: #6daa7a;
+  --success-bg: rgba(109, 170, 122, 0.1);
+  --shadow: 0 4px 24px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.2);
+  --shadow2: 0 8px 40px rgba(0,0,0,0.4);
+  --header-bg: linear-gradient(180deg, #241e19 0%, rgba(36,30,25,0.95) 100%);
+  --noise-opacity: 0.5;
+  --glow1: rgba(212,169,106,0.06);
+  --glow2: rgba(212,169,106,0.04);
+  --btn-text: #1a1310;
+  --card-hover-bg: rgba(212,169,106,0.04);
+  --toast-bg: #2e261f;
+}
+
+/* ══════════════════════════════════════
+   THEME: LIGHT
+   ══════════════════════════════════════ */
+[data-theme="light"] {
+  --bg: #f5efe6;
+  --bg2: #faf6f0;
+  --surface: #ffffff;
+  --surface2: #f0ebe3;
+  --surface3: #e8e0d4;
+  --border: #d9d0c3;
+  --border2: #c8bdad;
+  --accent: #b8892e;
+  --accent2: #a67b28;
+  --accent3: #9a6f1e;
+  --accent-glow: rgba(184, 137, 46, 0.12);
+  --accent-glow2: rgba(184, 137, 46, 0.06);
+  --text: #2c2418;
+  --text2: #5a4d3f;
+  --muted: #8a7d6e;
+  --muted2: #b0a594;
+  --danger: #c45e5e;
+  --danger-bg: rgba(196, 94, 94, 0.08);
+  --success: #4a8a5a;
+  --success-bg: rgba(74, 138, 90, 0.08);
+  --shadow: 0 2px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+  --shadow2: 0 4px 24px rgba(0,0,0,0.08);
+  --header-bg: linear-gradient(180deg, #ffffff 0%, rgba(255,255,255,0.95) 100%);
+  --noise-opacity: 0.15;
+  --glow1: rgba(184,137,46,0.04);
+  --glow2: rgba(184,137,46,0.02);
+  --btn-text: #ffffff;
+  --card-hover-bg: rgba(184,137,46,0.06);
+  --toast-bg: #ffffff;
+}
+
+/* ══════════════════════════════════════
+   RESET & BASE
+   ══════════════════════════════════════ */
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  background: var(--bg2);
+  color: var(--text);
+  font-family: 'Manrope', sans-serif;
+  min-height: 100dvh;
+  overscroll-behavior: none;
+  position: relative;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 0%, var(--glow1) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 100%, var(--glow2) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: var(--noise-opacity);
+}
+
+/* ══════════════════════════════════════
+   HEADER
+   ══════════════════════════════════════ */
+header {
+  background: var(--header-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.15);
+  transition: background 0.4s ease, border-color 0.4s ease;
+}
+
+.logo { display: flex; align-items: center; gap: 12px; }
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  box-shadow: 0 2px 12px rgba(212,169,106,0.25);
+}
+
+.logo-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+
+.logo-text span {
+  display: block;
+  font-family: 'Manrope', sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+
+.hright { display: flex; align-items: center; gap: 8px; }
+
+.user-chip {
+  font-size: 10px;
+  color: var(--muted);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 5px 12px;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: none;
+}
+
+.hbtn {
+  font-size: 10px;
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 5px 10px;
+  display: none;
+  transition: all 0.3s ease;
+}
+
+.hbtn:hover { color: var(--accent); border-color: var(--accent); }
+
+/* Theme toggle */
+.theme-toggle {
+  width: 32px;
+  height: 32px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  color: var(--muted);
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
+
+.theme-toggle .icon-sun,
+.theme-toggle .icon-moon { display: none; }
+
+[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+[data-theme="light"] .theme-toggle .icon-moon { display: block; }
+
+/* ══════════════════════════════════════
+   SCREENS
+   ══════════════════════════════════════ */
+#loading-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: calc(100dvh - 57px);
+  color: var(--muted);
+  font-size: 12px;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.loading-orb {
+  width: 48px;
+  height: 48px;
+  position: relative;
+}
+
+.loading-orb::before,
+.loading-orb::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+}
+
+.loading-orb::before { border-top-color: var(--accent); animation: spin 1s linear infinite; }
+.loading-orb::after { border-bottom-color: var(--accent2); animation: spin 1.5s linear infinite reverse; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+#login-screen {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100dvh - 57px);
+  padding: 32px 24px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.login-emblem {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--surface2) 0%, var(--surface3) 100%);
+  border: 2px solid var(--border);
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  margin-bottom: 28px;
+  box-shadow: var(--shadow2);
+  animation: emblemFloat 3s ease-in-out infinite;
+  position: relative;
+}
+
+.login-emblem::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 26px;
+  border: 1px solid var(--accent-glow);
+  animation: emblemPulse 3s ease-in-out infinite;
+}
+
+@keyframes emblemFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes emblemPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+}
+
+.login-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.login-sub {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+  margin-bottom: 36px;
+  max-width: 280px;
+  font-weight: 300;
+}
+
+.deco-line {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  margin: 16px auto;
+  border-radius: 2px;
+}
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 320px;
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+}
+
+.login-divider span {
+  font-size: 9px;
+  color: var(--muted2);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+.google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: var(--text);
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 16px 28px;
+  cursor: pointer;
+  width: 100%;
+  max-width: 320px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.google-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--accent-glow) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.google-btn:hover { border-color: var(--accent2); transform: translateY(-2px); box-shadow: var(--shadow2), 0 0 30px rgba(212,169,106,0.1); }
+.google-btn:hover::before { opacity: 1; }
+.google-btn:active { transform: translateY(0) scale(0.98); }
+
+/* ══════════════════════════════════════
+   MAIN HUB
+   ══════════════════════════════════════ */
+#main-screen {
+  display: none;
+  padding: 20px;
+  max-width: 480px;
+  margin: 0 auto;
+  padding-bottom: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.welcome {
+  text-align: center;
+  margin-bottom: 32px;
+  animation: fadeUp 0.6s ease both;
+}
+
+.welcome h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+.welcome p {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 300;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Section label */
+.section-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  margin: 0 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+}
+
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--border), transparent);
+}
+
+/* Module cards */
+.modules {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 32px;
+}
+
+.module-card {
+  background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px 16px;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  color: inherit;
+  animation: cardIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.module-card:nth-child(1) { animation-delay: 0.08s; }
+.module-card:nth-child(2) { animation-delay: 0.16s; }
+.module-card:nth-child(3) { animation-delay: 0.24s; }
+.module-card:nth-child(4) { animation-delay: 0.32s; }
+.module-card:nth-child(5) { animation-delay: 0.4s; }
+.module-card:nth-child(6) { animation-delay: 0.48s; }
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.module-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--accent), var(--accent2));
+  border-radius: 3px 0 0 3px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.module-card:hover {
+  border-color: var(--accent2);
+  transform: translateX(4px);
+  box-shadow: var(--shadow);
+  background: var(--card-hover-bg);
+}
+
+.module-card:hover::before { opacity: 1; }
+.module-card:active { transform: translateX(2px) scale(0.98); }
+
+.mc-icon {
+  width: 46px;
+  height: 46px;
+  background: linear-gradient(135deg, var(--surface2) 0%, var(--surface3) 100%);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+  transition: border-color 0.3s ease;
+}
+
+.module-card:hover .mc-icon { border-color: var(--accent); }
+
+.mc-info { flex: 1; min-width: 0; }
+
+.mc-info h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2px;
+  transition: color 0.3s ease;
+}
+
+.module-card:hover .mc-info h3 { color: var(--accent); }
+
+.mc-info p {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 300;
+  line-height: 1.4;
+}
+
+.mc-arrow {
+  color: var(--muted2);
+  font-size: 16px;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.module-card:hover .mc-arrow {
+  color: var(--accent);
+  transform: translateX(3px);
+}
+
+/* Settings section */
+.settings-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.setting-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 13px 16px;
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.setting-card:hover { border-color: var(--accent2); color: var(--text2); }
+
+.setting-card .si { font-size: 15px; flex-shrink: 0; }
+.setting-card .sl { flex: 1; }
+.setting-card .sv { font-size: 11px; color: var(--accent); font-weight: 500; }
+
+/* Sheet ID setup */
+#sheet-setup {
+  display: none;
+  padding: 24px 20px;
+  max-width: 480px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.screen-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.screen-desc {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+  margin-bottom: 24px;
+  font-weight: 300;
+}
+
+.screen-desc code {
+  color: var(--accent);
+  background: var(--surface2);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 11px;
+  border: 1px solid var(--border);
+}
+
+.field-group { margin-bottom: 16px; }
+
+label {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 7px;
+  font-weight: 500;
+}
+
+input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: var(--text);
+  font-family: 'Manrope', sans-serif;
+  font-size: 15px;
+  padding: 13px 16px;
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  -webkit-appearance: none;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.08);
+}
+
+input::placeholder { color: var(--muted2); font-weight: 300; }
+
+input:focus {
+  border-color: var(--accent2);
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.08), 0 0 0 3px var(--accent-glow2), 0 0 20px var(--accent-glow2);
+  background: var(--surface2);
+}
+
+.btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  color: var(--btn-text);
+  border: none;
+  border-radius: 14px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 16px;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 16px rgba(212,169,106,0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transition: left 0.6s ease;
+}
+
+.btn:hover::before { left: 100%; }
+.btn:active { transform: scale(0.97); }
+
+.btn-outline {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  box-shadow: none;
+}
+
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+.btn-outline::before { display: none; }
+
+/* Toast */
+#toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--toast-bg);
+  border: 1px solid var(--border);
+  border-radius: 40px;
+  padding: 13px 24px;
+  font-size: 13px;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 999;
+  white-space: nowrap;
+  max-width: 90vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: var(--shadow2);
+  backdrop-filter: blur(12px);
+  font-weight: 500;
+}
+
+#toast.show { transform: translateX(-50%) translateY(0); }
+
+#toast.success {
+  border-color: var(--success);
+  color: var(--success);
+}
+
+#toast.error {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+/* Page animation */
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-enter { animation: pageEnter 0.6s cubic-bezier(0.4, 0, 0.2, 1) both; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted2); }
+
+/* Footer version */
+.hub-footer {
+  text-align: center;
+  padding: 20px 0 0;
+  font-size: 10px;
+  color: var(--muted2);
+  font-weight: 300;
+  letter-spacing: 0.1em;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">🏗</div>
+    <div class="logo-text">КБ Контроль<span>Королевские бани · Астана</span></div>
+  </div>
+  <div class="hright">
+    <div class="user-chip" id="userChip"></div>
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Сменить тему">
+      <span class="icon-sun">☀️</span>
+      <span class="icon-moon">🌙</span>
+    </button>
+    <button class="hbtn" id="logoutBtn" onclick="signOut()" style="display:none">выйти</button>
+  </div>
+</header>
+
+<div id="loading-screen">
+  <div class="loading-orb"></div>
+  <span style="font-weight:300;letter-spacing:0.1em;font-size:11px;margin-top:4px">Инициализация...</span>
+</div>
+
+<div id="login-screen">
+  <div class="login-emblem">🏗</div>
+  <div class="login-title">КБ Контроль</div>
+  <div class="deco-line"></div>
+  <div class="login-sub">Единая система управления стройкой.<br>Войди через Google — доступ ко всем модулям.</div>
+  <div class="login-divider"><span>Вход</span></div>
+  <button class="google-btn" onclick="signIn()">
+    <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+    Войти через Google
+  </button>
+</div>
+
+<div id="sheet-setup" style="display:none">
+  <div class="screen-title">ID таблицы</div>
+  <div class="screen-desc">
+    Открой Google Таблицу → скопируй ID из URL:<br>
+    <code>spreadsheets/d/<b>ВОТ_ЭТО</b>/edit</code><br><br>
+    Таблица должна быть сохранена как <b>Google Таблицы</b>, не XLSX.
+  </div>
+  <div class="field-group">
+    <label>Spreadsheet ID</label>
+    <input type="text" id="sheetIdInput" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms" autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="off">
+  </div>
+  <button class="btn" onclick="saveSheetId()">Сохранить и продолжить</button>
+  <button class="btn btn-outline" style="margin-top:10px" onclick="goBack()">← Назад</button>
+</div>
+
+<div id="main-screen">
+  <div class="welcome">
+    <h1>Панель управления</h1>
+    <p id="welcomeText">Выбери модуль для работы</p>
+  </div>
+
+  <div class="section-label">Модули</div>
+  <div class="modules" id="modulesGrid"></div>
+
+  <div class="section-label">Настройки</div>
+  <div class="settings-row">
+    <div class="setting-card" onclick="showScreen('sheet-setup')">
+      <span class="si">📊</span>
+      <span class="sl">ID таблицы Google Sheets</span>
+      <span class="sv" id="sheetIdPreview">не указан</span>
+    </div>
+  </div>
+
+  <div class="hub-footer">КБ Контроль · v1.0</div>
+</div>
+
+<div id="toast"></div>
+
+<script src="https://accounts.google.com/gsi/client" async></script>
+<script>
+/* ══════════════════════════════════════
+   MODULE CONFIG
+   Чтобы добавить модуль — добавь строку в массив:
+   ══════════════════════════════════════ */
+const MODULES = [
+  { id: 'sklad',   title: 'Склад',              desc: 'Журнал приходов материалов',          icon: '📦', url: 'index_sklad.html' },
+  { id: 'workers', title: 'Контроль рабочих',    desc: 'Ежедневный учёт по направлениям',     icon: '👷', url: 'index_workers.html' },
+  { id: 'journal', title: 'Журнал приходов',     desc: 'Просмотр и аналитика всех приходов',  icon: '📋', url: 'journal.html' },
+];
+
+/* ══════════════════════════════════════
+   THEME SYSTEM
+   ══════════════════════════════════════ */
+function initTheme() {
+  const saved = localStorage.getItem('kb_theme');
+  if (saved) {
+    document.documentElement.setAttribute('data-theme', saved);
+  } else {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+  }
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('kb_theme', next);
+}
+
+// Apply theme immediately before page renders
+initTheme();
+
+// Listen for system theme changes
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+  if (!localStorage.getItem('kb_theme')) {
+    document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+  }
+});
+
+/* ══════════════════════════════════════
+   AUTH (shared across all modules)
+   ══════════════════════════════════════ */
+const CLIENT_ID = '747030737105-kpohc9g1rtfff9i8vels69r98r2akq3m.apps.googleusercontent.com';
+const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
+
+let accessToken = null;
+let tokenClient = null;
+
+window.onload = () => {
+  const check = setInterval(() => {
+    if (window.google && google.accounts) {
+      clearInterval(check);
+      tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: CLIENT_ID,
+        scope: SCOPES,
+        callback: (resp) => {
+          if (resp.error) { toast('Ошибка входа: ' + resp.error, 'error'); return; }
+          accessToken = resp.access_token;
+          // Save token for other modules
+          localStorage.setItem('kb_auth_token', accessToken);
+          onSignedIn();
+        }
+      });
+      // Check if already have a token
+      const saved = localStorage.getItem('kb_auth_token');
+      if (saved) {
+        accessToken = saved;
+        verifyToken();
+      } else {
+        showScreen('login');
+      }
+    }
+  }, 100);
+  setTimeout(() => { clearInterval(check); if (!accessToken) showScreen('login'); }, 6000);
+};
+
+async function verifyToken() {
+  try {
+    const r = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', { headers: { Authorization: 'Bearer ' + accessToken } });
+    if (r.ok) {
+      onSignedIn();
+    } else {
+      localStorage.removeItem('kb_auth_token');
+      accessToken = null;
+      showScreen('login');
+    }
+  } catch(e) {
+    localStorage.removeItem('kb_auth_token');
+    accessToken = null;
+    showScreen('login');
+  }
+}
+
+function signIn() { tokenClient.requestAccessToken({ prompt: '' }); }
+
+function signOut() {
+  if (accessToken) try { google.accounts.oauth2.revoke(accessToken, ()=>{}); } catch(e){}
+  accessToken = null;
+  localStorage.removeItem('kb_auth_token');
+  document.getElementById('userChip').style.display = 'none';
+  document.getElementById('logoutBtn').style.display = 'none';
+  showScreen('login');
+}
+
+async function onSignedIn() {
+  try {
+    const r = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', { headers: { Authorization: 'Bearer ' + accessToken } });
+    const u = await r.json();
+    const chip = document.getElementById('userChip');
+    chip.textContent = u.email || '';
+    chip.style.display = 'block';
+    document.getElementById('logoutBtn').style.display = 'block';
+    document.getElementById('welcomeText').textContent = u.given_name ? `Привет, ${u.given_name}` : 'Выбери модуль для работы';
+  } catch(e){}
+
+  const sheetId = localStorage.getItem('kb_sheet_id') || '';
+  if (sheetId) {
+    document.getElementById('sheetIdPreview').textContent = sheetId.slice(0, 12) + '...';
+  }
+
+  showScreen('main');
+  renderModules();
+}
+
+/* ══════════════════════════════════════
+   SHEET ID
+   ══════════════════════════════════════ */
+function saveSheetId() {
+  const v = document.getElementById('sheetIdInput').value.trim();
+  if (!v) { toast('Вставь ID таблицы', 'error'); return; }
+  localStorage.setItem('kb_sheet_id', v);
+  document.getElementById('sheetIdPreview').textContent = v.slice(0, 12) + '...';
+  showScreen('main');
+  toast('ID таблицы сохранён ✓', 'success');
+}
+
+function goBack() { showScreen('main'); }
+
+/* ══════════════════════════════════════
+   RENDER MODULES
+   ══════════════════════════════════════ */
+function renderModules() {
+  const grid = document.getElementById('modulesGrid');
+  grid.innerHTML = MODULES.map(m => `
+    <a class="module-card" href="${m.url}" onclick="navigateModule(event, '${m.url}')">
+      <div class="mc-icon">${m.icon}</div>
+      <div class="mc-info">
+        <h3>${m.title}</h3>
+        <p>${m.desc}</p>
+      </div>
+      <span class="mc-arrow">→</span>
+    </a>
+  `).join('');
+}
+
+function navigateModule(e, url) {
+  // Ensure token is fresh in localStorage before navigating
+  if (accessToken) {
+    localStorage.setItem('kb_auth_token', accessToken);
+  }
+  // Let default link behavior work
+}
+
+/* ══════════════════════════════════════
+   NAVIGATION
+   ══════════════════════════════════════ */
+function showScreen(name) {
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = name === 'login' ? 'flex' : 'none';
+  document.getElementById('sheet-setup').style.display = name === 'sheet-setup' ? 'block' : 'none';
+  document.getElementById('main-screen').style.display = name === 'main' ? 'block' : 'none';
+  if (name === 'sheet-setup') {
+    document.getElementById('sheetIdInput').value = localStorage.getItem('kb_sheet_id') || '';
+  }
+  const screens = { login:'login-screen', 'sheet-setup':'sheet-setup', main:'main-screen' };
+  const el = document.getElementById(screens[name]);
+  if (el) {
+    el.classList.remove('page-enter');
+    void el.offsetWidth;
+    el.classList.add('page-enter');
+  }
+}
+
+function toast(msg, type='') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `show ${type}`;
+  setTimeout(() => el.className = '', 3200);
+}
+</script>
+</body>
+</html>

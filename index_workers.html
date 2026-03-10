@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Контроль Рабочих КБ</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👷</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════
+   THEME: DARK
+   ══════════════════════════════════════ */
+[data-theme="dark"] {
+  --bg: #1a1310;
+  --bg2: #0f0c0a;
+  --surface: #241e19;
+  --surface2: #2e261f;
+  --surface3: #382f26;
+  --border: #3d3229;
+  --border2: #4a3d32;
+  --accent: #d4a96a;
+  --accent2: #c49555;
+  --accent3: #e8c48a;
+  --accent-glow: rgba(212, 169, 106, 0.15);
+  --accent-glow2: rgba(212, 169, 106, 0.08);
+  --text: #f0e6d8;
+  --text2: #c8b9a6;
+  --muted: #7a6b5a;
+  --muted2: #5a4d3f;
+  --danger: #c45e5e;
+  --danger-bg: rgba(196, 94, 94, 0.1);
+  --success: #6daa7a;
+  --success-bg: rgba(109, 170, 122, 0.1);
+  --info: #6a9fd4;
+  --info-bg: rgba(106, 159, 212, 0.1);
+  --shadow: 0 4px 24px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.2);
+  --shadow2: 0 8px 40px rgba(0,0,0,0.4);
+  --header-bg: linear-gradient(180deg, #241e19 0%, rgba(36,30,25,0.95) 100%);
+  --noise-opacity: 0.5;
+  --glow1: rgba(212,169,106,0.06);
+  --glow2: rgba(212,169,106,0.04);
+  --btn-text: #1a1310;
+  --toast-bg: #2e261f;
+  --input-shadow: inset 0 1px 3px rgba(0,0,0,0.15);
+}
+
+/* ══════════════════════════════════════
+   THEME: LIGHT
+   ══════════════════════════════════════ */
+[data-theme="light"] {
+  --bg: #f5efe6;
+  --bg2: #faf6f0;
+  --surface: #ffffff;
+  --surface2: #f0ebe3;
+  --surface3: #e8e0d4;
+  --border: #d9d0c3;
+  --border2: #c8bdad;
+  --accent: #b8892e;
+  --accent2: #a67b28;
+  --accent3: #9a6f1e;
+  --accent-glow: rgba(184, 137, 46, 0.12);
+  --accent-glow2: rgba(184, 137, 46, 0.06);
+  --text: #2c2418;
+  --text2: #5a4d3f;
+  --muted: #8a7d6e;
+  --muted2: #b0a594;
+  --danger: #c45e5e;
+  --danger-bg: rgba(196, 94, 94, 0.08);
+  --success: #4a8a5a;
+  --success-bg: rgba(74, 138, 90, 0.08);
+  --info: #4a7fb8;
+  --info-bg: rgba(74, 127, 184, 0.08);
+  --shadow: 0 2px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+  --shadow2: 0 4px 24px rgba(0,0,0,0.08);
+  --header-bg: linear-gradient(180deg, #ffffff 0%, rgba(255,255,255,0.95) 100%);
+  --noise-opacity: 0.15;
+  --glow1: rgba(184,137,46,0.04);
+  --glow2: rgba(184,137,46,0.02);
+  --btn-text: #ffffff;
+  --toast-bg: #ffffff;
+  --input-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
+}
+
+/* ══════════════════════════════════════
+   RESET & BASE
+   ══════════════════════════════════════ */
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  background: var(--bg2);
+  color: var(--text);
+  font-family: 'Manrope', sans-serif;
+  min-height: 100dvh;
+  overscroll-behavior: none;
+  position: relative;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 0%, var(--glow1) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 100%, var(--glow2) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: var(--noise-opacity);
+}
+
+/* ══════════════════════════════════════
+   HEADER
+   ══════════════════════════════════════ */
+header {
+  background: var(--header-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.15);
+  transition: background 0.4s ease, border-color 0.4s ease;
+}
+
+.logo { display: flex; align-items: center; gap: 12px; }
+
+.back-btn {
+  width: 32px;
+  height: 32px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  color: var(--muted);
+  font-size: 14px;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.back-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  box-shadow: 0 2px 12px rgba(212,169,106,0.25);
+}
+
+.logo-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+
+.logo-text span {
+  display: block;
+  font-family: 'Manrope', sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+
+.hright { display: flex; align-items: center; gap: 8px; }
+
+.user-chip {
+  font-size: 10px;
+  color: var(--muted);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 5px 12px;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: none;
+}
+
+.hbtn {
+  font-size: 10px;
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 5px 10px;
+  display: none;
+  transition: all 0.3s ease;
+}
+
+.hbtn:hover { color: var(--accent); border-color: var(--accent); }
+
+.theme-toggle {
+  width: 32px;
+  height: 32px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  color: var(--muted);
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
+.theme-toggle .icon-sun, .theme-toggle .icon-moon { display: none; }
+[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+[data-theme="light"] .theme-toggle .icon-moon { display: block; }
+
+/* ══════════════════════════════════════
+   SCREENS
+   ══════════════════════════════════════ */
+.screen { display: none; padding: 24px 20px; max-width: 480px; margin: 0 auto; position: relative; z-index: 1; }
+
+#loading-screen {
+  display: flex; align-items: center; justify-content: center; flex-direction: column;
+  min-height: calc(100dvh - 57px); color: var(--muted); font-size: 12px; gap: 16px;
+  position: relative; z-index: 1;
+}
+
+#login-screen {
+  display: none; flex-direction: column; align-items: center; justify-content: center;
+  min-height: calc(100dvh - 57px); padding: 32px 24px; text-align: center;
+  position: relative; z-index: 1;
+}
+
+#main-screen {
+  display: none; padding: 20px; max-width: 480px; margin: 0 auto; padding-bottom: 60px;
+  position: relative; z-index: 1;
+}
+
+/* ══════════════════════════════════════
+   LOGIN
+   ══════════════════════════════════════ */
+.login-emblem {
+  width: 80px; height: 80px;
+  background: linear-gradient(135deg, var(--surface2) 0%, var(--surface3) 100%);
+  border: 2px solid var(--border); border-radius: 24px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px; margin-bottom: 28px;
+  box-shadow: var(--shadow2);
+  animation: emblemFloat 3s ease-in-out infinite;
+  position: relative;
+}
+
+.login-emblem::after {
+  content: ''; position: absolute; inset: -4px; border-radius: 26px;
+  border: 1px solid var(--accent-glow);
+  animation: emblemPulse 3s ease-in-out infinite;
+}
+
+@keyframes emblemFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes emblemPulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
+
+.login-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 700; color: var(--accent); margin-bottom: 8px; }
+
+.login-sub { color: var(--muted); font-size: 12px; line-height: 1.8; margin-bottom: 36px; max-width: 280px; font-weight: 300; }
+
+.deco-line { width: 60px; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), transparent); margin: 16px auto; border-radius: 2px; }
+
+.login-divider { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; width: 100%; max-width: 320px; }
+.login-divider::before, .login-divider::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); }
+.login-divider span { font-size: 9px; color: var(--muted2); text-transform: uppercase; letter-spacing: 0.2em; }
+
+.google-btn {
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
+  border: 1px solid var(--border); border-radius: 14px; color: var(--text);
+  font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 500;
+  padding: 16px 28px; cursor: pointer; width: 100%; max-width: 320px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow); position: relative; overflow: hidden;
+}
+
+.google-btn::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, var(--accent-glow) 0%, transparent 60%); opacity: 0; transition: opacity 0.4s ease; }
+.google-btn:hover { border-color: var(--accent2); transform: translateY(-2px); box-shadow: var(--shadow2), 0 0 30px rgba(212,169,106,0.1); }
+.google-btn:hover::before { opacity: 1; }
+.google-btn:active { transform: translateY(0) scale(0.98); }
+
+/* ══════════════════════════════════════
+   SHEET SETUP
+   ══════════════════════════════════════ */
+.screen-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 700; color: var(--accent); margin-bottom: 10px; }
+.screen-desc { color: var(--muted); font-size: 12px; line-height: 1.8; margin-bottom: 24px; font-weight: 300; }
+.screen-desc code { color: var(--accent); background: var(--surface2); padding: 2px 8px; border-radius: 6px; font-family: 'Manrope', sans-serif; font-size: 11px; border: 1px solid var(--border); }
+
+/* ══════════════════════════════════════
+   FORM ELEMENTS
+   ══════════════════════════════════════ */
+.field-group { margin-bottom: 16px; animation: fieldFadeIn 0.4s ease both; }
+.field-group:nth-child(1) { animation-delay: 0.05s; }
+.field-group:nth-child(2) { animation-delay: 0.1s; }
+.field-group:nth-child(3) { animation-delay: 0.15s; }
+.field-group:nth-child(4) { animation-delay: 0.2s; }
+
+@keyframes fieldFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+label { display: block; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 7px; font-weight: 500; }
+
+input, select, textarea {
+  width: 100%; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; color: var(--text); font-family: 'Manrope', sans-serif;
+  font-size: 15px; padding: 13px 16px; outline: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  -webkit-appearance: none; box-shadow: var(--input-shadow);
+}
+
+input::placeholder, textarea::placeholder { color: var(--muted2); font-weight: 300; }
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent2);
+  box-shadow: var(--input-shadow), 0 0 0 3px var(--accent-glow2), 0 0 20px var(--accent-glow2);
+  background: var(--surface2);
+}
+
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a6b5a' stroke-width='1.5' stroke-linecap='round' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 16px center; padding-right: 38px;
+}
+
+select option { background: var(--surface); }
+textarea { resize: none; height: 72px; font-size: 13px; line-height: 1.6; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.date-today { font-size: 10px; color: var(--accent); background: none; border: none; cursor: pointer; padding: 0; font-family: inherit; margin-left: 8px; font-weight: 600; transition: color 0.2s; letter-spacing: 0.05em; }
+.date-today:hover { color: var(--accent3); }
+
+/* ══════════════════════════════════════
+   BUTTONS
+   ══════════════════════════════════════ */
+.btn {
+  width: 100%; background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  color: var(--btn-text); border: none; border-radius: 14px;
+  font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 700;
+  padding: 16px; cursor: pointer; margin-top: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 0.08em; text-transform: uppercase;
+  box-shadow: 0 4px 16px rgba(212,169,106,0.25);
+  position: relative; overflow: hidden;
+}
+
+.btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent); transition: left 0.6s ease; }
+.btn:hover::before { left: 100%; }
+.btn:active { transform: scale(0.97); }
+.btn:disabled { background: var(--surface2); color: var(--muted2); cursor: not-allowed; transform: none; box-shadow: none; }
+
+.btn-outline { background: none; border: 1px solid var(--border); color: var(--muted); box-shadow: none; }
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 20px var(--accent-glow2); }
+.btn-outline::before { display: none; }
+
+/* ══════════════════════════════════════
+   COUNTER BAR
+   ══════════════════════════════════════ */
+.counter-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px; font-size: 11px; color: var(--muted);
+  padding: 12px 16px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; box-shadow: var(--shadow);
+}
+
+.counter-bar .sheet-link { color: var(--muted); cursor: pointer; transition: color 0.2s; display: flex; align-items: center; gap: 4px; }
+.counter-bar .sheet-link:hover { color: var(--accent); }
+.counter-bar .sheet-link svg { width: 14px; height: 14px; }
+
+/* ══════════════════════════════════════
+   DIRECTION CHIPS
+   ══════════════════════════════════════ */
+.direction-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+
+.dir-chip {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 12px 14px; font-size: 12px; font-weight: 500; color: var(--text2);
+  cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center; position: relative; overflow: hidden;
+}
+
+.dir-chip::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, var(--accent-glow) 0%, transparent 60%); opacity: 0; transition: opacity 0.3s ease; }
+.dir-chip:hover { border-color: var(--accent2); transform: translateY(-1px); }
+.dir-chip:hover::before { opacity: 1; }
+
+.dir-chip.active {
+  border-color: var(--accent);
+  background: linear-gradient(135deg, rgba(212,169,106,0.12) 0%, rgba(196,149,85,0.06) 100%);
+  color: var(--accent3);
+  box-shadow: 0 0 20px var(--accent-glow2), inset 0 0 20px var(--accent-glow2);
+}
+
+[data-theme="light"] .dir-chip.active {
+  background: linear-gradient(135deg, rgba(184,137,46,0.1) 0%, rgba(166,123,40,0.05) 100%);
+  color: var(--accent);
+}
+
+.dir-chip.active::before { opacity: 1; }
+
+/* ══════════════════════════════════════
+   CURRENT DATA CARD
+   ══════════════════════════════════════ */
+.current-data {
+  background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
+  border: 1px solid var(--border); border-radius: 14px;
+  padding: 14px 16px; margin-bottom: 16px; font-size: 12px;
+  position: relative; overflow: hidden;
+  animation: cardSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.current-data::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: linear-gradient(180deg, var(--info), var(--accent)); border-radius: 3px 0 0 3px; }
+
+.current-data .cd-title { font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted); margin-bottom: 10px; font-weight: 500; }
+.current-data .cd-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid rgba(61,50,41,0.4); }
+
+[data-theme="light"] .current-data .cd-row { border-bottom: 1px solid rgba(0,0,0,0.06); }
+
+.current-data .cd-row:last-child { border-bottom: none; }
+.current-data .cd-label { color: var(--muted); font-size: 11px; }
+.current-data .cd-value { color: var(--text); font-size: 12px; font-weight: 500; }
+.current-data .cd-value.empty { color: var(--muted2); font-style: italic; font-weight: 300; }
+
+/* ══════════════════════════════════════
+   SECTION LABEL
+   ══════════════════════════════════════ */
+.section-label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em;
+  color: var(--muted); margin: 28px 0 14px; display: flex; align-items: center;
+  gap: 12px; font-weight: 500;
+}
+
+.section-label::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
+
+/* ══════════════════════════════════════
+   ENTRY CARDS
+   ══════════════════════════════════════ */
+.entry-card {
+  background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
+  border: 1px solid var(--border); border-radius: 14px;
+  padding: 14px 16px; margin-bottom: 8px; font-size: 12px;
+  animation: cardSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1); transition: all 0.3s ease;
+  position: relative; overflow: hidden;
+}
+
+.entry-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: linear-gradient(180deg, var(--accent), var(--accent2)); border-radius: 3px 0 0 3px; }
+.entry-card:hover { border-color: var(--border2); transform: translateX(3px); }
+
+@keyframes cardSlideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+
+.entry-card .mat { font-size: 14px; font-weight: 600; margin-bottom: 6px; color: var(--text); }
+.entry-card .meta { color: var(--muted); font-size: 11px; display: flex; gap: 12px; flex-wrap: wrap; font-weight: 300; }
+.entry-card .qty { color: var(--accent); font-weight: 600; }
+
+/* ══════════════════════════════════════
+   STATUS BADGE
+   ══════════════════════════════════════ */
+.status-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 600; padding: 4px 10px; border-radius: 20px; letter-spacing: 0.05em; }
+.status-badge.filled { background: var(--success-bg); color: var(--success); border: 1px solid rgba(109,170,122,0.2); }
+.status-badge.empty-status { background: rgba(122,107,90,0.1); color: var(--muted); border: 1px solid rgba(122,107,90,0.2); }
+
+/* ══════════════════════════════════════
+   FETCH BAR
+   ══════════════════════════════════════ */
+.fetch-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+
+.fetch-bar .fetch-btn {
+  font-size: 10px; color: var(--accent); background: var(--surface);
+  border: 1px solid var(--border); border-radius: 8px; cursor: pointer;
+  font-family: inherit; padding: 6px 12px; transition: all 0.3s ease;
+  font-weight: 500; letter-spacing: 0.05em;
+}
+
+.fetch-bar .fetch-btn:hover { border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow2); }
+.fetch-bar .fetch-btn:disabled { color: var(--muted2); cursor: not-allowed; }
+
+/* ══════════════════════════════════════
+   TOAST
+   ══════════════════════════════════════ */
+#toast {
+  position: fixed; bottom: 24px; left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--toast-bg); border: 1px solid var(--border);
+  border-radius: 40px; padding: 13px 24px; font-size: 13px;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 999; white-space: nowrap; max-width: 90vw;
+  overflow: hidden; text-overflow: ellipsis;
+  box-shadow: var(--shadow2); backdrop-filter: blur(12px); font-weight: 500;
+}
+
+#toast.show { transform: translateX(-50%) translateY(0); }
+#toast.success { border-color: var(--success); color: var(--success); }
+#toast.error { border-color: var(--danger); color: var(--danger); }
+
+/* ══════════════════════════════════════
+   MISC
+   ══════════════════════════════════════ */
+.spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite; vertical-align: middle; margin-right: 8px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-orb { width: 48px; height: 48px; position: relative; }
+.loading-orb::before, .loading-orb::after { content: ''; position: absolute; inset: 0; border-radius: 50%; border: 2px solid transparent; }
+.loading-orb::before { border-top-color: var(--accent); animation: spin 1s linear infinite; }
+.loading-orb::after { border-bottom-color: var(--accent2); animation: spin 1.5s linear infinite reverse; }
+
+.empty-state { color: var(--muted2); font-size: 12px; text-align: center; padding: 20px; font-weight: 300; font-style: italic; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted2); }
+
+@keyframes pageEnter { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.page-enter { animation: pageEnter 0.6s cubic-bezier(0.4, 0, 0.2, 1) both; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <a href="index.html" class="back-btn" title="Назад в хаб">←</a>
+    <div class="logo-icon">👷</div>
+    <div class="logo-text">Рабочие КБ<span>Королевские бани · Астана</span></div>
+  </div>
+  <div class="hright">
+    <div class="user-chip" id="userChip"></div>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Сменить тему">
+      <span class="icon-sun">☀️</span>
+      <span class="icon-moon">🌙</span>
+    </button>
+    <button class="hbtn" id="changeBtn" onclick="showScreen('sheet-setup')" style="display:none">ID</button>
+    <button class="hbtn" id="logoutBtn" onclick="signOut()" style="display:none">выйти</button>
+  </div>
+</header>
+
+<div id="loading-screen">
+  <div class="loading-orb"></div>
+  <span style="font-weight:300;letter-spacing:0.1em;font-size:11px;margin-top:4px">Инициализация...</span>
+</div>
+
+<div id="login-screen">
+  <div class="login-emblem">👷</div>
+  <div class="login-title">Рабочие КБ</div>
+  <div class="deco-line"></div>
+  <div class="login-sub">Ежедневный контроль рабочих.<br>Авторизация через Google — данные записываются в таблицу.</div>
+  <div class="login-divider"><span>Вход</span></div>
+  <button class="google-btn" onclick="signIn()">
+    <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+    Войти через Google
+  </button>
+</div>
+
+<div id="sheet-setup" class="screen">
+  <div class="screen-title">ID таблицы</div>
+  <div class="screen-desc">
+    Открой Google Таблицу «Контроль Рабочих КБ» → скопируй ID из URL:<br>
+    <code>spreadsheets/d/<b>ВОТ_ЭТО</b>/edit</code><br><br>
+    Таблица должна быть сохранена как <b>Google Таблицы</b>, не XLSX.<br>
+    Файл → Сохранить как Google Таблицы.
+  </div>
+  <div class="field-group">
+    <label>Spreadsheet ID</label>
+    <input type="text" id="sheetIdInput" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms" autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="off">
+  </div>
+  <button class="btn" onclick="saveSheetId()">Сохранить и продолжить</button>
+  <button class="btn btn-outline" style="margin-top:10px" onclick="goBack()">← Назад</button>
+</div>
+
+<div id="main-screen">
+  <div class="counter-bar">
+    <span id="dateDisplay" style="font-weight:500"></span>
+    <span class="sheet-link" onclick="openSheet()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Таблица
+    </span>
+  </div>
+
+  <div class="section-label">Направление</div>
+  <div class="direction-grid" id="dirGrid"></div>
+
+  <div class="field-group" style="margin-top:20px">
+    <label>Дата <button class="date-today" onclick="setToday()">· сегодня</button></label>
+    <input type="date" id="f_date" onchange="onDateChange()">
+  </div>
+
+  <div id="currentDataWrap" style="display:none">
+    <div class="fetch-bar">
+      <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.15em;font-weight:500">Текущие данные</span>
+      <button class="fetch-btn" id="fetchBtn" onclick="fetchCurrentData()">Обновить</button>
+    </div>
+    <div id="currentData"></div>
+  </div>
+
+  <div class="section-label">Заполнить</div>
+
+  <div class="row2">
+    <div class="field-group">
+      <label>Кол-во рабочих</label>
+      <input type="number" id="f_workers" placeholder="0" inputmode="numeric" min="0">
+    </div>
+    <div class="field-group">
+      <label>Пришло</label>
+      <input type="number" id="f_came" placeholder="0" inputmode="numeric" min="0">
+    </div>
+  </div>
+  <div class="field-group">
+    <label>План работ</label>
+    <textarea id="f_plan" placeholder="Что запланировано на сегодня..."></textarea>
+  </div>
+  <div class="field-group">
+    <label>Факт работ</label>
+    <textarea id="f_fact" placeholder="Что фактически сделано..."></textarea>
+  </div>
+  <div class="field-group">
+    <label>Примечание</label>
+    <textarea id="f_note" placeholder="Дополнительная информация..." style="height:56px"></textarea>
+  </div>
+
+  <button class="btn" id="submitBtn" onclick="submitEntry()">Записать в таблицу</button>
+
+  <div class="section-label">Записи этой сессии</div>
+  <div id="recentList"><div class="empty-state">Нет записей в этой сессии</div></div>
+</div>
+
+<div id="toast"></div>
+
+<script src="https://accounts.google.com/gsi/client" async></script>
+<script>
+/* ══════════════════════════════════════
+   THEME SYSTEM
+   ══════════════════════════════════════ */
+function initTheme() {
+  const saved = localStorage.getItem('kb_theme');
+  if (saved) { document.documentElement.setAttribute('data-theme', saved); }
+  else { document.documentElement.setAttribute('data-theme', window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); }
+}
+function toggleTheme() {
+  const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('kb_theme', next);
+}
+initTheme();
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+  if (!localStorage.getItem('kb_theme')) document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+});
+
+/* ══════════════════════════════════════
+   AUTH
+   ══════════════════════════════════════ */
+const CLIENT_ID = '747030737105-kpohc9g1rtfff9i8vels69r98r2akq3m.apps.googleusercontent.com';
+const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
+
+const DIRECTIONS = [
+  'Кровля','Утепление (плотники)','Разнорабочие','Сантехника',
+  'Электрика','Вентиляция','Парные и хаммамы','Гидроизоляция',
+  'Отделка','Ресторан','Пожарные системы','Бассейны',
+];
+
+const HEADER_ROWS = 3;
+const BLOCK_SIZE = 8;
+
+let accessToken = null;
+let sheetId = localStorage.getItem('kb_workers_sheet_id') || '';
+let selectedDir = localStorage.getItem('kb_workers_dir') || DIRECTIONS[0];
+let recent = [];
+let tokenClient = null;
+
+const DAYS_RU = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+
+window.onload = () => {
+  const check = setInterval(() => {
+    if (window.google && google.accounts) {
+      clearInterval(check);
+      tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: CLIENT_ID,
+        scope: SCOPES,
+        callback: (resp) => {
+          if (resp.error) { toast('Ошибка входа: ' + resp.error, 'error'); return; }
+          accessToken = resp.access_token;
+          localStorage.setItem('kb_auth_token', accessToken);
+          onSignedIn();
+        }
+      });
+
+      const saved = localStorage.getItem('kb_auth_token');
+      if (saved) { accessToken = saved; verifyToken(); }
+      else { showScreen('login'); }
+    }
+  }, 100);
+  setTimeout(() => { clearInterval(check); if (!accessToken) showScreen('login'); }, 6000);
+};
+
+async function verifyToken() {
+  try {
+    const r = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', { headers: { Authorization: 'Bearer ' + accessToken } });
+    if (r.ok) { onSignedIn(); }
+    else { localStorage.removeItem('kb_auth_token'); accessToken = null; showScreen('login'); }
+  } catch(e) { localStorage.removeItem('kb_auth_token'); accessToken = null; showScreen('login'); }
+}
+
+function signIn() { tokenClient.requestAccessToken({ prompt: '' }); }
+
+function signOut() {
+  if (accessToken) try { google.accounts.oauth2.revoke(accessToken, ()=>{}); } catch(e){}
+  accessToken = null;
+  localStorage.removeItem('kb_auth_token');
+  localStorage.removeItem('kb_workers_sheet_id');
+  sheetId = '';
+  document.getElementById('userChip').style.display = 'none';
+  document.getElementById('changeBtn').style.display = 'none';
+  document.getElementById('logoutBtn').style.display = 'none';
+  showScreen('login');
+}
+
+async function onSignedIn() {
+  try {
+    const r = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {headers:{Authorization:'Bearer '+accessToken}});
+    const u = await r.json();
+    document.getElementById('userChip').textContent = u.email || '';
+    document.getElementById('userChip').style.display = 'block';
+    document.getElementById('changeBtn').style.display = 'block';
+    document.getElementById('logoutBtn').style.display = 'block';
+  } catch(e){}
+
+  if (!sheetId) { showScreen('sheet-setup'); return; }
+  showScreen('main');
+  initMain();
+}
+
+function saveSheetId() {
+  const v = document.getElementById('sheetIdInput').value.trim();
+  if (!v) { toast('Вставь ID таблицы', 'error'); return; }
+  sheetId = v;
+  localStorage.setItem('kb_workers_sheet_id', sheetId);
+  showScreen('main');
+  initMain();
+  toast('ID таблицы сохранён ✓', 'success');
+}
+
+function goBack() { if (accessToken && sheetId) showScreen('main'); else showScreen('login'); }
+
+function initMain() { renderDirections(); setToday(); updateDateDisplay(); fetchCurrentData(); }
+
+/* ══════ Direction Grid ══════ */
+function renderDirections() {
+  document.getElementById('dirGrid').innerHTML = DIRECTIONS.map(d =>
+    `<div class="dir-chip ${d === selectedDir ? 'active' : ''}" onclick="selectDir('${d.replace(/'/g, "\\'")}')">${d}</div>`
+  ).join('');
+}
+
+function selectDir(d) { selectedDir = d; localStorage.setItem('kb_workers_dir', d); renderDirections(); fetchCurrentData(); }
+
+/* ══════ Date ══════ */
+function setToday() { document.getElementById('f_date').value = new Date().toISOString().split('T')[0]; onDateChange(); }
+
+function onDateChange() { updateDateDisplay(); if (accessToken && sheetId) fetchCurrentData(); }
+
+function updateDateDisplay() {
+  const dateStr = document.getElementById('f_date').value;
+  if (!dateStr) return;
+  const [y,m,d] = dateStr.split('-');
+  const date = new Date(+y, +m-1, +d);
+  document.getElementById('dateDisplay').innerHTML =
+    `<span style="color:var(--accent);font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:700">${+d}.${m}.${y}</span> · ${DAYS_RU[date.getDay()]} · <span style="color:var(--accent3)">${selectedDir}</span>`;
+}
+
+function getRowForDate(dateStr) {
+  const day = parseInt(dateStr.split('-')[2], 10);
+  return HEADER_ROWS + 1 + (day - 1) * BLOCK_SIZE;
+}
+
+/* ══════ Sheets API ══════ */
+async function sheetsGet(range) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}`;
+  const r = await fetch(url, {headers:{Authorization:'Bearer '+accessToken}});
+  if (!r.ok) { const t = await r.text(); throw new Error(t); }
+  return r.json();
+}
+
+async function sheetsUpdate(range, values) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`;
+  const r = await fetch(url, { method: 'PUT', headers: { Authorization: 'Bearer ' + accessToken, 'Content-Type': 'application/json' }, body: JSON.stringify({ values: [values] }) });
+  if (!r.ok) { const t = await r.text(); throw new Error(t); }
+  return r.json();
+}
+
+/* ══════ Fetch current data ══════ */
+async function fetchCurrentData() {
+  const dateStr = document.getElementById('f_date').value;
+  if (!dateStr || !accessToken || !sheetId) return;
+
+  const wrap = document.getElementById('currentDataWrap');
+  const el = document.getElementById('currentData');
+  const btn = document.getElementById('fetchBtn');
+
+  wrap.style.display = 'block'; btn.disabled = true; btn.textContent = '...';
+
+  try {
+    const row = getRowForDate(dateStr);
+    const range = `'${selectedDir}'!C${row}:G${row}`;
+    const data = await sheetsGet(range);
+    const vals = (data.values && data.values[0]) || [];
+    const workers = vals[0] || '', came = vals[1] || '', plan = vals[2] || '', fact = vals[3] || '', note = vals[4] || '';
+    const hasData = workers || came || plan || fact || note;
+
+    el.innerHTML = `<div class="current-data">
+      <div class="cd-title">${hasData ? '<span class="status-badge filled">● Заполнено</span>' : '<span class="status-badge empty-status">○ Пусто</span>'}</div>
+      <div class="cd-row"><span class="cd-label">Кол-во рабочих</span><span class="cd-value ${workers?'':'empty'}">${workers||'—'}</span></div>
+      <div class="cd-row"><span class="cd-label">Пришло</span><span class="cd-value ${came?'':'empty'}">${came||'—'}</span></div>
+      <div class="cd-row"><span class="cd-label">План</span><span class="cd-value ${plan?'':'empty'}">${plan||'—'}</span></div>
+      <div class="cd-row"><span class="cd-label">Факт</span><span class="cd-value ${fact?'':'empty'}">${fact||'—'}</span></div>
+      <div class="cd-row"><span class="cd-label">Примечание</span><span class="cd-value ${note?'':'empty'}">${note||'—'}</span></div>
+    </div>`;
+
+    if (workers) document.getElementById('f_workers').value = workers;
+    if (came) document.getElementById('f_came').value = came;
+    if (plan) document.getElementById('f_plan').value = plan;
+    if (fact) document.getElementById('f_fact').value = fact;
+    if (note) document.getElementById('f_note').value = note;
+  } catch(e) {
+    el.innerHTML = `<div class="current-data" style="border-color:var(--danger)"><div class="cd-title" style="color:var(--danger)">Ошибка загрузки</div><div style="font-size:11px;color:var(--muted);word-break:break-all">${e.message.slice(0,120)}</div></div>`;
+  }
+
+  btn.disabled = false; btn.textContent = 'Обновить';
+}
+
+/* ══════ Submit ══════ */
+async function submitEntry() {
+  if (!accessToken) { toast('Сессия истекла', 'error'); signOut(); return; }
+
+  const dateStr = document.getElementById('f_date').value;
+  const workers = document.getElementById('f_workers').value.trim();
+  const came = document.getElementById('f_came').value.trim();
+  const plan = document.getElementById('f_plan').value.trim();
+  const fact = document.getElementById('f_fact').value.trim();
+  const note = document.getElementById('f_note').value.trim();
+
+  if (!dateStr) { toast('Выбери дату', 'error'); return; }
+  if (!workers && !came && !plan && !fact) { toast('Заполни хотя бы одно поле', 'error'); return; }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Запись...';
+
+  try {
+    const row = getRowForDate(dateStr);
+    const range = `'${selectedDir}'!C${row}:G${row}`;
+    await sheetsUpdate(range, [ workers ? parseFloat(workers) : '', came ? parseFloat(came) : '', plan, fact, note ]);
+
+    const [y,m,d] = dateStr.split('-');
+    toast(`✓ ${selectedDir} · ${+d}.${m}`, 'success');
+
+    recent.unshift({ dir: selectedDir, date: `${+d}.${m}.${y}`, workers, came, plan, fact });
+    if (recent.length > 8) recent.pop();
+    renderRecent();
+
+    ['f_workers','f_came'].forEach(id => document.getElementById(id).value = '');
+    ['f_plan','f_fact','f_note'].forEach(id => document.getElementById(id).value = '');
+    fetchCurrentData();
+  } catch(e) {
+    toast('Ошибка: ' + e.message.slice(0, 80), 'error');
+  }
+
+  btn.disabled = false; btn.innerHTML = 'Записать в таблицу';
+}
+
+/* ══════ Recent ══════ */
+function renderRecent() {
+  const el = document.getElementById('recentList');
+  if (!recent.length) { el.innerHTML = '<div class="empty-state">Нет записей в этой сессии</div>'; return; }
+  el.innerHTML = recent.map((e, i) => `
+    <div class="entry-card" style="animation-delay:${i*0.08}s">
+      <div class="mat">${e.dir} · ${e.date}</div>
+      <div class="meta">
+        ${e.workers ? `<span class="qty">${e.workers} чел.</span>` : ''}
+        ${e.came ? `<span>пришло: ${e.came}</span>` : ''}
+        ${e.plan ? `<span>${e.plan.slice(0,40)}${e.plan.length>40?'...':''}</span>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+/* ══════ Nav ══════ */
+function openSheet() { if(sheetId) window.open(`https://docs.google.com/spreadsheets/d/${sheetId}/edit`, '_blank'); }
+
+function showScreen(name) {
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = name === 'login' ? 'flex' : 'none';
+  document.getElementById('sheet-setup').style.display = name === 'sheet-setup' ? 'block' : 'none';
+  document.getElementById('main-screen').style.display = name === 'main' ? 'block' : 'none';
+  if (name === 'sheet-setup') document.getElementById('sheetIdInput').value = sheetId || '';
+  const screens = { login:'login-screen', 'sheet-setup':'sheet-setup', main:'main-screen' };
+  const el = document.getElementById(screens[name]);
+  if (el) { el.classList.remove('page-enter'); void el.offsetWidth; el.classList.add('page-enter'); }
+}
+
+function toast(msg, type='') {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.className = `show ${type}`;
+  setTimeout(() => el.className = '', 3200);
+}
+</script>
+</body>
+</html>
