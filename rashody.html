@@ -37,6 +37,45 @@
   --font-body: 'Manrope', sans-serif;
 }
 
+/* Light theme */
+html.light {
+  --bg: #f0f4f0;
+  --bg2: #e8ece8;
+  --surface: #ffffff;
+  --surface2: #f5f8f5;
+  --surface3: #eaf0ea;
+  --border: #c0d4c0;
+  --border2: #a8c4a8;
+  --accent: #008a2e;
+  --accent2: #007025;
+  --accent3: #00a638;
+  --accent-dim: #007025;
+  --accent-glow: rgba(0, 138, 46, 0.12);
+  --accent-glow2: rgba(0, 138, 46, 0.06);
+  --accent-glow3: rgba(0, 138, 46, 0.03);
+  --text: #1a2e1a;
+  --text2: #3a5a3a;
+  --muted: #6a8a6a;
+  --muted2: #94b494;
+  --danger: #cc2222;
+  --danger-bg: rgba(204, 34, 34, 0.08);
+  --success: #008a2e;
+  --success-bg: rgba(0, 138, 46, 0.08);
+  --shadow: 0 4px 24px rgba(0,0,0,0.08);
+  --shadow2: 0 8px 40px rgba(0,0,0,0.12);
+}
+
+html.light #matrixCanvas { opacity: 0.03; }
+html.light body::after { opacity: 0; }
+html.light .login-title { text-shadow: none; }
+html.light .glitch::before, html.light .glitch::after { display: none; }
+html.light .logo-text { text-shadow: none; }
+html.light .stat-box .stat-value { text-shadow: none; }
+html.light .entry-card .ec-sum { text-shadow: none; }
+html.light .google-btn { background: var(--surface); border-color: var(--border); color: var(--text); }
+html.light .google-btn:hover { border-color: var(--accent); }
+html.light #toast { background: var(--surface); }
+
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
 body {
@@ -46,6 +85,7 @@ body {
   min-height: 100dvh;
   overscroll-behavior: none;
   position: relative;
+  transition: background 0.4s, color 0.4s;
 }
 
 /* Matrix rain canvas */
@@ -856,6 +896,7 @@ textarea { resize: none; height: 64px; font-size: 12px; line-height: 1.6; }
   <div class="hright">
     <div class="user-chip" id="userChip"></div>
     <button class="hbtn" id="changeBtn" onclick="showScreen('sheet-setup')">config</button>
+    <button class="hbtn" id="themeBtn" onclick="toggleTheme()" style="display:block;font-size:14px;padding:4px 10px;cursor:pointer" title="Тема">☀️</button>
     <button class="hbtn" id="logoutBtn" onclick="signOut()">logout</button>
   </div>
 </header>
@@ -988,6 +1029,23 @@ textarea { resize: none; height: 64px; font-size: 12px; line-height: 1.6; }
 
 <script src="https://accounts.google.com/gsi/client" async></script>
 <script>
+/* ── Theme Toggle ── */
+(function initTheme() {
+  const saved = localStorage.getItem('kb_rashody_theme');
+  if (saved === 'light') {
+    document.documentElement.classList.add('light');
+    const btn = document.getElementById('themeBtn');
+    if (btn) btn.textContent = '🌙';
+  }
+})();
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const isLight = html.classList.toggle('light');
+  localStorage.setItem('kb_rashody_theme', isLight ? 'light' : 'dark');
+  document.getElementById('themeBtn').textContent = isLight ? '🌙' : '☀️';
+}
+
 /* ── Matrix Rain ── */
 (function matrixRain() {
   const canvas = document.getElementById('matrixCanvas');
