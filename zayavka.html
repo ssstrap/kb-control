@@ -8,7 +8,6 @@
 <style>
 :root {
   --bg: #f7f8f7;
-  --bg2: #ffffff;
   --surface: #ffffff;
   --surface2: #f0f2f0;
   --surface3: #e8ece8;
@@ -17,7 +16,6 @@
   --accent: #16a34a;
   --accent2: #15803d;
   --accent3: #22c55e;
-  --accent-dim: #15803d;
   --accent-glow: rgba(22,163,74,0.10);
   --accent-glow2: rgba(22,163,74,0.05);
   --accent-glow3: rgba(22,163,74,0.02);
@@ -27,22 +25,16 @@
   --muted2: #b0c0b0;
   --danger: #dc2626;
   --danger-bg: rgba(220,38,38,0.06);
-  --success: #16a34a;
-  --success-bg: rgba(22,163,74,0.06);
-  --r: 12px;
   --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03);
   --shadow2: 0 2px 8px rgba(0,0,0,0.06), 0 8px 32px rgba(0,0,0,0.04);
   --font-mono: 'JetBrains Mono', monospace;
   --font-body: 'Onest', sans-serif;
-  --glow-line: rgba(22,163,74,0.15);
-  --card-bg: #ffffff;
   --header-bg: rgba(255,255,255,0.85);
   --input-bg: #f5f7f5;
 }
 
 html.dark {
   --bg: #0c0f0c;
-  --bg2: #111611;
   --surface: #161b16;
   --surface2: #1c231c;
   --surface3: #232b23;
@@ -51,7 +43,6 @@ html.dark {
   --accent: #22c55e;
   --accent2: #16a34a;
   --accent3: #4ade80;
-  --accent-dim: #16a34a;
   --accent-glow: rgba(34,197,94,0.12);
   --accent-glow2: rgba(34,197,94,0.06);
   --accent-glow3: rgba(34,197,94,0.03);
@@ -61,12 +52,8 @@ html.dark {
   --muted2: #3a5a3a;
   --danger: #ef4444;
   --danger-bg: rgba(239,68,68,0.08);
-  --success: #22c55e;
-  --success-bg: rgba(34,197,94,0.08);
   --shadow: 0 1px 3px rgba(0,0,0,0.2), 0 4px 16px rgba(0,0,0,0.15);
   --shadow2: 0 2px 8px rgba(0,0,0,0.3), 0 8px 32px rgba(0,0,0,0.2);
-  --glow-line: rgba(34,197,94,0.25);
-  --card-bg: #161b16;
   --header-bg: rgba(12,15,12,0.9);
   --input-bg: #1c231c;
 }
@@ -82,7 +69,6 @@ body {
   transition: background 0.4s, color 0.4s;
 }
 
-/* ─── Glow accent line at top ─── */
 body::before {
   content: '';
   position: fixed;
@@ -93,528 +79,254 @@ body::before {
   opacity: 0.7;
 }
 
-/* ─── Subtle grid pattern ─── */
 body::after {
   content: '';
-  position: fixed;
-  inset: 0;
+  position: fixed; inset: 0;
   background-image: 
     linear-gradient(var(--accent-glow3) 1px, transparent 1px),
     linear-gradient(90deg, var(--accent-glow3) 1px, transparent 1px);
   background-size: 40px 40px;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.6;
+  pointer-events: none; z-index: 0; opacity: 0.6;
 }
-
 html.dark body::after { opacity: 0.4; }
 
-/* ─── Header ─── */
 header {
   background: var(--header-bg);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border-bottom: 1px solid var(--border);
   padding: 12px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
 }
 
 .logo { display: flex; align-items: center; gap: 10px; }
-
 .logo-icon {
   width: 36px; height: 36px;
   background: var(--accent-glow);
   border: 1px solid var(--accent);
   border-radius: 8px;
   display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-mono);
-  font-size: 11px; font-weight: 600;
-  color: var(--accent);
-  position: relative;
-  overflow: hidden;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+  color: var(--accent); position: relative; overflow: hidden;
 }
-
 .logo-icon::after {
-  content: '';
-  position: absolute;
-  inset: 0;
+  content: ''; position: absolute; inset: 0;
   background: linear-gradient(135deg, var(--accent-glow) 0%, transparent 60%);
   border-radius: inherit;
 }
-
-.logo-text {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text);
-  line-height: 1.1;
-}
-
-.logo-text span {
-  display: block;
-  font-family: var(--font-mono);
-  font-size: 9px;
-  font-weight: 400;
-  color: var(--muted);
-  letter-spacing: 0.08em;
-  margin-top: 2px;
-}
-
+.logo-text { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1.1; }
+.logo-text span { display: block; font-family: var(--font-mono); font-size: 9px; font-weight: 400; color: var(--muted); letter-spacing: 0.08em; margin-top: 2px; }
 .hright { display: flex; align-items: center; gap: 6px; }
 
 .user-chip {
-  font-size: 10px;
-  color: var(--muted);
-  font-family: var(--font-mono);
-  background: var(--accent-glow2);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 4px 10px;
-  max-width: 120px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  display: none;
+  font-size: 10px; color: var(--muted); font-family: var(--font-mono);
+  background: var(--accent-glow2); border: 1px solid var(--border);
+  border-radius: 6px; padding: 4px 10px; max-width: 120px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: none;
 }
 
 .hbtn {
-  font-size: 16px;
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  cursor: pointer;
-  padding: 4px 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.25s;
-  color: var(--muted);
-  line-height: 1;
+  font-size: 16px; background: none; border: 1px solid var(--border);
+  border-radius: 6px; cursor: pointer; padding: 4px 8px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.25s; color: var(--muted); line-height: 1;
 }
-
 .hbtn:hover { border-color: var(--accent); color: var(--accent); }
 
 .hbtn-text {
-  font-size: 10px;
-  font-family: var(--font-mono);
-  color: var(--muted);
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  cursor: pointer;
-  padding: 5px 10px;
-  transition: all 0.25s;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  display: none;
+  font-size: 10px; font-family: var(--font-mono); color: var(--muted);
+  background: none; border: 1px solid var(--border); border-radius: 6px;
+  cursor: pointer; padding: 5px 10px; transition: all 0.25s;
+  text-transform: uppercase; letter-spacing: 0.06em; display: none;
 }
-
 .hbtn-text:hover { color: var(--accent); border-color: var(--accent); }
 
-/* ─── Screens ─── */
-.screen { display: none; padding: 24px 20px; max-width: 480px; margin: 0 auto; position: relative; z-index: 2; }
-
 #loading-screen {
-  display: flex;
-  align-items: center; justify-content: center;
-  flex-direction: column;
-  min-height: calc(100dvh - 57px);
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  gap: 16px;
-  position: relative;
-  z-index: 2;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; min-height: calc(100dvh - 57px);
+  color: var(--muted); font-family: var(--font-mono); font-size: 12px;
+  gap: 16px; position: relative; z-index: 2;
 }
 
 .loading-dot {
-  width: 8px; height: 8px;
-  background: var(--accent);
-  border-radius: 50%;
-  animation: pulse 1.2s ease-in-out infinite;
+  width: 8px; height: 8px; background: var(--accent);
+  border-radius: 50%; animation: pulse 1.2s ease-in-out infinite;
   box-shadow: 0 0 16px var(--accent-glow);
 }
-
-@keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.5); opacity: 1; } }
+@keyframes pulse { 0%,100%{transform:scale(1);opacity:.6} 50%{transform:scale(1.5);opacity:1} }
 
 #login-screen {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: calc(100dvh - 57px);
-  padding: 32px 24px;
-  text-align: center;
-  position: relative;
-  z-index: 2;
+  display: none; flex-direction: column; align-items: center; justify-content: center;
+  min-height: calc(100dvh - 57px); padding: 32px 24px; text-align: center;
+  position: relative; z-index: 2;
 }
 
 #main-screen {
-  display: none;
-  padding: 20px;
-  max-width: 520px;
-  margin: 0 auto;
-  padding-bottom: 100px;
-  position: relative;
-  z-index: 2;
+  display: none; padding: 20px; max-width: 520px; margin: 0 auto;
+  padding-bottom: 100px; position: relative; z-index: 2;
 }
 
-/* ─── Login ─── */
 .login-emblem {
-  width: 80px; height: 80px;
-  background: var(--accent-glow);
-  border: 1px solid var(--accent);
-  border-radius: 16px;
+  width: 80px; height: 80px; background: var(--accent-glow);
+  border: 1px solid var(--accent); border-radius: 16px;
   display: flex; align-items: center; justify-content: center;
-  margin-bottom: 24px;
-  position: relative;
-  overflow: hidden;
+  margin-bottom: 24px; position: relative; overflow: hidden;
 }
-
 .login-emblem::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  border-radius: 17px;
-  background: linear-gradient(135deg, var(--accent-glow), transparent 60%);
-  z-index: -1;
+  content: ''; position: absolute; inset: -1px; border-radius: 17px;
+  background: linear-gradient(135deg, var(--accent-glow), transparent 60%); z-index: -1;
 }
+.login-emblem .emblem-icon { font-size: 28px; color: var(--accent); }
 
-.login-emblem .emblem-icon {
-  font-size: 28px;
-  color: var(--accent);
-}
-
-.login-title {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 6px;
-  letter-spacing: -0.01em;
-}
-
-.login-sub {
-  font-size: 13px;
-  color: var(--muted);
-  line-height: 1.6;
-  margin-bottom: 32px;
-  max-width: 280px;
-}
+.login-title { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.login-sub { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 32px; max-width: 280px; }
 
 .google-btn {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 500;
-  border-radius: 10px;
-  padding: 12px 28px;
-  cursor: pointer;
-  transition: all 0.25s;
-  box-shadow: var(--shadow);
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); font-family: var(--font-body); font-size: 14px; font-weight: 500;
+  border-radius: 10px; padding: 12px 28px; cursor: pointer;
+  transition: all 0.25s; box-shadow: var(--shadow);
 }
-
 .google-btn:hover { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
 .google-btn:active { transform: scale(0.98); }
 
-/* ─── Sheet setup ─── */
-#sheet-setup { position: relative; z-index: 2; }
-
-.setup-title { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
-.setup-desc { font-size: 12px; color: var(--muted); line-height: 1.5; margin-bottom: 20px; font-family: var(--font-mono); }
-.setup-desc code { color: var(--accent); background: var(--accent-glow2); padding: 2px 6px; border-radius: 4px; font-size: 11px; }
-
-/* ─── Form ─── */
 .section-label {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 500;
-  color: var(--muted);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  margin-bottom: 16px;
-  padding-left: 2px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  font-family: var(--font-mono); font-size: 10px; font-weight: 500;
+  color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: 16px; padding-left: 2px;
+  display: flex; align-items: center; gap: 8px;
 }
-
 .section-label::before {
-  content: '';
-  width: 3px; height: 3px;
-  background: var(--accent);
-  border-radius: 50%;
-  box-shadow: 0 0 6px var(--accent);
+  content: ''; width: 3px; height: 3px;
+  background: var(--accent); border-radius: 50%; box-shadow: 0 0 6px var(--accent);
 }
 
-.field-group {
-  margin-bottom: 14px;
-}
-
-.field-group label {
-  display: block;
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text2);
-  margin-bottom: 5px;
-  letter-spacing: 0.02em;
-}
+.field-group { margin-bottom: 14px; }
+.field-group label { display: block; font-size: 11px; font-weight: 500; color: var(--text2); margin-bottom: 5px; }
 
 .field-group input,
 .field-group select,
 .field-group textarea {
-  width: 100%;
-  background: var(--input-bg);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: var(--font-body);
-  font-size: 14px;
-  padding: 11px 14px;
-  border-radius: 10px;
-  outline: none;
-  transition: all 0.25s;
-  -webkit-appearance: none;
+  width: 100%; background: var(--input-bg); border: 1px solid var(--border);
+  color: var(--text); font-family: var(--font-body); font-size: 14px;
+  padding: 11px 14px; border-radius: 10px; outline: none;
+  transition: all 0.25s; -webkit-appearance: none;
 }
-
 .field-group select {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a9a8a' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 14px center;
-  padding-right: 36px;
+  background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px;
 }
-
 html.dark .field-group select {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235a7a5a' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
 }
+.field-group input:focus, .field-group select:focus, .field-group textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+.field-group input::placeholder, .field-group textarea::placeholder { color: var(--muted2); }
 
-.field-group input:focus,
-.field-group select:focus,
-.field-group textarea:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
-
-.field-group input::placeholder,
-.field-group textarea::placeholder { color: var(--muted2); }
-
-.field-group textarea { resize: vertical; min-height: 70px; }
-
-.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-/* ─── Buttons ─── */
 .btn {
-  width: 100%;
-  padding: 13px 20px;
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 600;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.25s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  position: relative;
-  overflow: hidden;
+  width: 100%; padding: 13px 20px; font-family: var(--font-body);
+  font-size: 14px; font-weight: 600; border: none; border-radius: 10px;
+  cursor: pointer; transition: all 0.25s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
 }
-
-.btn-primary {
-  background: var(--accent);
-  color: #fff;
-  box-shadow: 0 2px 12px rgba(22,163,74,0.25);
-}
-
+.btn-primary { background: var(--accent); color: #fff; box-shadow: 0 2px 12px rgba(22,163,74,0.25); }
 .btn-primary:hover { background: var(--accent2); box-shadow: 0 4px 20px rgba(22,163,74,0.35); transform: translateY(-1px); }
 .btn-primary:active { transform: translateY(0); }
 .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-.btn-outline {
-  background: transparent;
-  color: var(--text2);
-  border: 1px solid var(--border);
-}
-
-.btn-outline:hover { border-color: var(--accent); color: var(--accent); }
-
-.btn-ghost {
-  background: var(--accent-glow);
-  color: var(--accent);
-  border: 1px solid transparent;
-}
-
+.btn-ghost { background: var(--accent-glow); color: var(--accent); border: 1px solid transparent; }
 .btn-ghost:hover { border-color: var(--accent); }
-
-.btn-danger {
-  background: var(--danger-bg);
-  color: var(--danger);
-  border: 1px solid transparent;
-}
-
+.btn-danger { background: var(--danger-bg); color: var(--danger); border: 1px solid transparent; }
 .btn-danger:hover { border-color: var(--danger); }
 
-/* ─── Counter bar ─── */
 .counter-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  padding: 10px 14px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  box-shadow: var(--shadow);
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 20px; padding: 10px 14px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; box-shadow: var(--shadow);
 }
-
-.counter-date {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--accent);
-  font-weight: 500;
-}
-
+.counter-date { font-family: var(--font-mono); font-size: 12px; color: var(--accent); font-weight: 500; }
 .sheet-link {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--muted);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  transition: all 0.25s;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  font-family: var(--font-mono); font-size: 10px; color: var(--muted);
+  cursor: pointer; display: flex; align-items: center; gap: 4px;
+  padding: 4px 10px; border: 1px solid var(--border); border-radius: 6px;
+  transition: all 0.25s; text-transform: uppercase; letter-spacing: 0.06em;
 }
-
 .sheet-link:hover { color: var(--accent); border-color: var(--accent); }
 .sheet-link svg { width: 12px; height: 12px; }
 
-/* ─── Stats ─── */
-.stats-panel {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
+.stats-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
 .stat-box {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px 14px;
-  box-shadow: var(--shadow);
-  position: relative;
-  overflow: hidden;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px 14px; box-shadow: var(--shadow);
+  position: relative; overflow: hidden;
 }
-
 .stat-box::before {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--accent), transparent);
-  opacity: 0.4;
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+  height: 2px; background: linear-gradient(90deg, var(--accent), transparent); opacity: 0.4;
 }
-
-.stat-label { font-size: 10px; color: var(--muted); font-family: var(--font-mono); letter-spacing: 0.04em; margin-bottom: 4px; }
+.stat-label { font-size: 10px; color: var(--muted); font-family: var(--font-mono); margin-bottom: 4px; }
 .stat-value { font-size: 22px; font-weight: 700; color: var(--text); }
 .stat-value small { font-size: 12px; color: var(--muted); font-weight: 400; }
 
-/* ─── Entries list ─── */
-.entry-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px 14px;
-  margin-bottom: 8px;
-  box-shadow: var(--shadow);
-  animation: fadeUp 0.3s ease both;
-  border-left: 3px solid var(--accent);
+.table-preview {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; overflow: hidden; margin-bottom: 16px; box-shadow: var(--shadow);
 }
-
-@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
-.ec-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
-.ec-desc { font-size: 13px; font-weight: 500; color: var(--text); flex: 1; }
-.ec-sum { font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--accent); margin-left: 12px; white-space: nowrap; }
-.ec-meta { display: flex; flex-wrap: wrap; gap: 8px; font-size: 10px; color: var(--muted); font-family: var(--font-mono); }
+.table-preview table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.table-preview th {
+  background: var(--accent); color: #fff; font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em; padding: 8px 10px; text-align: left;
+}
+.table-preview td { padding: 8px 10px; border-top: 1px solid var(--border); color: var(--text); }
+.table-preview tr:nth-child(even) td { background: var(--accent-glow3); }
+.table-preview .sum-row td { font-weight: 700; background: var(--accent-glow); color: var(--accent); border-top: 2px solid var(--accent); }
 
 .empty-state {
-  text-align: center;
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  padding: 24px;
-  border: 1px dashed var(--border);
-  border-radius: 10px;
+  text-align: center; color: var(--muted); font-family: var(--font-mono);
+  font-size: 11px; padding: 24px; border: 1px dashed var(--border); border-radius: 10px;
 }
 
-/* ─── Actions bar ─── */
-.actions-bar {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 16px;
-}
+.actions-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
 
-/* ─── Toast ─── */
 #toast {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
+  position: fixed; bottom: 20px; left: 50%;
   transform: translateX(-50%) translateY(80px);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 500;
-  padding: 10px 20px;
-  border-radius: 10px;
-  z-index: 1000;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); font-family: var(--font-body); font-size: 13px; font-weight: 500;
+  padding: 10px 20px; border-radius: 10px; z-index: 1000;
   transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
-  box-shadow: var(--shadow2);
-  white-space: nowrap;
+  box-shadow: var(--shadow2); white-space: nowrap;
 }
-
 #toast.show { transform: translateX(-50%) translateY(0); }
 #toast.success { border-color: var(--accent); color: var(--accent); }
 #toast.error { border-color: var(--danger); color: var(--danger); }
 
-/* ─── Spinner ─── */
-.spinner {
-  width: 16px; height: 16px;
-  border: 2px solid rgba(255,255,255,0.2);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-  display: inline-block;
+.spinner { width:16px;height:16px;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:inline-block; }
+@keyframes spin { to{transform:rotate(360deg)} }
+.page-enter { animation: pageIn .35s ease both; }
+@keyframes pageIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
+
+.confirm-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+  z-index: 500; display: flex; align-items: center; justify-content: center;
+  padding: 20px; backdrop-filter: blur(4px);
 }
-
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* ─── Page enter ─── */
-.page-enter { animation: pageIn 0.35s ease both; }
-@keyframes pageIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
-
-/* ─── Responsive ─── */
-@media (max-width: 380px) {
-  .row2 { grid-template-columns: 1fr; }
-  .stats-panel { grid-template-columns: 1fr; }
-  .actions-bar { grid-template-columns: 1fr; }
+.confirm-box {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; padding: 24px; max-width: 340px; width: 100%;
+  box-shadow: var(--shadow2); text-align: center;
 }
+.confirm-box h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+.confirm-box p { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.5; }
+.confirm-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.confirm-btns button { padding:10px;border-radius:8px;font-family:var(--font-body);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;border:none; }
+.confirm-cancel { background: var(--surface2); color: var(--text2); }
+.confirm-cancel:hover { background: var(--surface3); }
+.confirm-ok { background: var(--danger); color: #fff; }
+.confirm-ok:hover { opacity: 0.9; }
+
+@media (max-width:380px) { .stats-panel{grid-template-columns:1fr} .actions-bar{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
@@ -627,7 +339,6 @@ html.dark .field-group select {
   <div class="hright">
     <div class="user-chip" id="userChip"></div>
     <button class="hbtn" id="themeBtn" onclick="toggleTheme()" title="Сменить тему">☀️</button>
-    <button class="hbtn-text" id="changeBtn" onclick="showScreen('sheet-setup')">⚙</button>
     <button class="hbtn-text" id="logoutBtn" onclick="signOut()">выйти</button>
   </div>
 </header>
@@ -638,9 +349,7 @@ html.dark .field-group select {
 </div>
 
 <div id="login-screen">
-  <div class="login-emblem">
-    <div class="emblem-icon">₸</div>
-  </div>
+  <div class="login-emblem"><div class="emblem-icon">₸</div></div>
   <div class="login-title">Заявка на финансирование</div>
   <div class="login-sub">Составление заявки на оплату.<br>Данные записываются в Google Таблицу.</div>
   <button class="google-btn" onclick="signIn()">
@@ -649,22 +358,7 @@ html.dark .field-group select {
   </button>
 </div>
 
-<div id="sheet-setup" class="screen">
-  <div class="setup-title">Настройка таблицы</div>
-  <div class="setup-desc">
-    Открой Google Таблицу и скопируй ID из адресной строки:<br>
-    <code>spreadsheets/d/<b>ID</b>/edit</code>
-  </div>
-  <div class="field-group">
-    <label>ID таблицы</label>
-    <input type="text" id="sheetIdInput" placeholder="Вставь ID сюда..." autocomplete="off" autocorrect="off" spellcheck="false">
-  </div>
-  <button class="btn btn-primary" onclick="saveSheetId()" style="margin-bottom:10px">Сохранить</button>
-  <button class="btn btn-outline" onclick="goBack()">← Назад</button>
-</div>
-
 <div id="main-screen">
-  <!-- Counter bar -->
   <div class="counter-bar">
     <span class="counter-date" id="dateDisplay"></span>
     <span class="sheet-link" onclick="openSheet()">
@@ -673,295 +367,281 @@ html.dark .field-group select {
     </span>
   </div>
 
-  <!-- Stats -->
-  <div class="stats-panel" id="statsPanel">
-    <div class="stat-box">
-      <div class="stat-label">Записей за сессию</div>
-      <div class="stat-value" id="statCount">0</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-label">Сумма за сессию</div>
-      <div class="stat-value" id="statSum">0 <small>₸</small></div>
-    </div>
+  <div class="stats-panel">
+    <div class="stat-box"><div class="stat-label">Позиций</div><div class="stat-value" id="statCount">...</div></div>
+    <div class="stat-box"><div class="stat-label">Общая сумма</div><div class="stat-value" id="statSum">... <small>₸</small></div></div>
   </div>
 
-  <!-- Form -->
-  <div class="section-label">Новая заявка</div>
-
-  <div class="field-group">
-    <label>Категория</label>
-    <select id="f_category">
-      <option>Доставка</option>
-      <option>Материалы</option>
-      <option>Инструменты</option>
-      <option>Зарплата</option>
-      <option>Подрядчик</option>
-      <option>Расходники</option>
-      <option>Прочее</option>
-    </select>
-  </div>
-
-  <div class="field-group">
-    <label>Способ оплаты</label>
-    <select id="f_payment">
-      <option>Каспи</option>
-      <option>Наличные</option>
-      <option>Перевод</option>
-      <option>Карта</option>
-    </select>
-  </div>
-
-  <div class="field-group">
-    <label>Сумма (₸)</label>
-    <input type="number" id="f_sum" placeholder="0" inputmode="decimal" min="0">
-  </div>
-
-  <div class="field-group">
-    <label>Описание</label>
-    <textarea id="f_desc" placeholder="Что оплачиваем..." autocomplete="off"></textarea>
-  </div>
-
-  <button class="btn btn-primary" id="submitBtn" onclick="submitEntry()" style="margin-bottom:12px">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-    Записать в таблицу
-  </button>
-
-  <div class="actions-bar">
-    <button class="btn btn-ghost" onclick="openSheet()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-      Открыть таблицу
-    </button>
-    <button class="btn btn-danger" onclick="clearForm()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
-      Очистить форму
-    </button>
-  </div>
+  <div class="section-label">Текущая заявка</div>
+  <div id="tablePreview"><div class="empty-state">Загрузка данных из таблицы...</div></div>
 
   <div style="margin-top:24px">
-    <div class="section-label">Записи сессии</div>
-    <div id="recentList"><div class="empty-state">Записей пока нет</div></div>
+    <div class="section-label">Добавить позицию</div>
+
+    <div class="field-group">
+      <label>Статья расходов</label>
+      <input type="text" id="f_article" placeholder="Доставка брусов, кирпич М150..." autocomplete="off">
+    </div>
+    <div class="field-group">
+      <label>Реквизиты для оплаты</label>
+      <select id="f_payment">
+        <option>Каспи</option>
+        <option>Наличные</option>
+        <option>Перевод</option>
+        <option>Карта</option>
+      </select>
+    </div>
+    <div class="field-group">
+      <label>Сумма (₸)</label>
+      <input type="number" id="f_sum" placeholder="0" inputmode="decimal" min="0">
+    </div>
+    <div class="field-group">
+      <label>Комментарий</label>
+      <input type="text" id="f_comment" placeholder="Необязательно" autocomplete="off">
+    </div>
+
+    <button class="btn btn-primary" id="submitBtn" onclick="submitEntry()" style="margin-bottom:12px">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+      Записать в таблицу
+    </button>
+
+    <div class="actions-bar">
+      <button class="btn btn-ghost" onclick="openSheet()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Открыть таблицу
+      </button>
+      <button class="btn btn-danger" onclick="confirmClear()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+        Очистить таблицу
+      </button>
+    </div>
   </div>
 </div>
 
+<div id="confirmDialog" style="display:none"></div>
 <div id="toast"></div>
 
 <script src="https://accounts.google.com/gsi/client" async></script>
 <script>
 /* ── Theme ── */
-(function initTheme() {
-  const saved = localStorage.getItem('kb_zayavka_theme');
-  if (saved === 'dark') {
-    document.documentElement.classList.add('dark');
-    const btn = document.getElementById('themeBtn');
-    if (btn) btn.textContent = '🌙';
-  }
+(function(){
+  const s = localStorage.getItem('kb_zayavka_theme');
+  if(s==='dark'){document.documentElement.classList.add('dark');const b=document.getElementById('themeBtn');if(b)b.textContent='🌙';}
 })();
-
-function toggleTheme() {
-  const html = document.documentElement;
-  const isDark = html.classList.toggle('dark');
-  localStorage.setItem('kb_zayavka_theme', isDark ? 'dark' : 'light');
-  document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
+function toggleTheme(){
+  const h=document.documentElement, d=h.classList.toggle('dark');
+  localStorage.setItem('kb_zayavka_theme',d?'dark':'light');
+  document.getElementById('themeBtn').textContent=d?'🌙':'☀️';
 }
 
 /* ── Config ── */
-const CLIENT_ID = '747030737105-kpohc9g1rtfff9i8vels69r98r2akq3m.apps.googleusercontent.com';
-const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
-const SHEET_NAME = 'Лист1';
+const CLIENT_ID='747030737105-kpohc9g1rtfff9i8vels69r98r2akq3m.apps.googleusercontent.com';
+const SCOPES='https://www.googleapis.com/auth/spreadsheets';
+const SHEET_ID='1FqDrHom4ubamvE8z9Y2jgk6qN1o3H86NB--R_C33kDY';
+const SHEET_NAME='Лист1';
+const DATA_START=3;
 
-let accessToken = null;
-let sheetId = localStorage.getItem('kb_zayavka_sheet_id') || '';
-let recent = [];
-let tokenClient = null;
+let accessToken=null, tokenClient=null, tableData=[];
 
-const DAYS_RU = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
-const MONTHS_RU = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+const DAYS=['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+const MONTHS=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
 
-window.onload = () => {
-  const check = setInterval(() => {
-    if (window.google && google.accounts) {
-      clearInterval(check);
-      tokenClient = google.accounts.oauth2.initTokenClient({
-        client_id: CLIENT_ID,
-        scope: SCOPES,
-        callback: (resp) => {
-          if (resp.error) { toast('Ошибка: ' + resp.error, 'error'); return; }
-          accessToken = resp.access_token;
-          onSignedIn();
-        }
+window.onload=()=>{
+  const ch=setInterval(()=>{
+    if(window.google&&google.accounts){
+      clearInterval(ch);
+      tokenClient=google.accounts.oauth2.initTokenClient({
+        client_id:CLIENT_ID, scope:SCOPES,
+        callback:(r)=>{ if(r.error){toast('Ошибка: '+r.error,'error');return;} accessToken=r.access_token; onSignedIn(); }
       });
       showScreen('login');
     }
-  }, 100);
-  setTimeout(() => { clearInterval(check); showScreen('login'); }, 6000);
+  },100);
+  setTimeout(()=>{clearInterval(ch);showScreen('login');},6000);
 };
 
-function signIn() { tokenClient.requestAccessToken({ prompt: '' }); }
+function signIn(){tokenClient.requestAccessToken({prompt:''});}
 
-function signOut() {
-  if (accessToken) try { google.accounts.oauth2.revoke(accessToken, ()=>{}); } catch(e){}
-  accessToken = null;
-  document.getElementById('userChip').style.display = 'none';
-  document.getElementById('changeBtn').style.display = 'none';
-  document.getElementById('logoutBtn').style.display = 'none';
+function signOut(){
+  if(accessToken)try{google.accounts.oauth2.revoke(accessToken,()=>{});}catch(e){}
+  accessToken=null;
+  document.getElementById('userChip').style.display='none';
+  document.getElementById('logoutBtn').style.display='none';
   showScreen('login');
 }
 
-async function onSignedIn() {
-  try {
-    const r = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {headers:{Authorization:'Bearer '+accessToken}});
-    const u = await r.json();
-    const chip = document.getElementById('userChip');
-    chip.textContent = u.email || '';
-    chip.style.display = 'block';
-    document.getElementById('changeBtn').style.display = 'block';
-    document.getElementById('logoutBtn').style.display = 'block';
-  } catch(e){}
-
-  if (!sheetId) { showScreen('sheet-setup'); return; }
+async function onSignedIn(){
+  try{
+    const r=await fetch('https://www.googleapis.com/oauth2/v3/userinfo',{headers:{Authorization:'Bearer '+accessToken}});
+    const u=await r.json();
+    document.getElementById('userChip').textContent=u.email||'';
+    document.getElementById('userChip').style.display='block';
+    document.getElementById('logoutBtn').style.display='block';
+  }catch(e){}
   showScreen('main');
-  initMain();
-}
-
-function saveSheetId() {
-  const v = document.getElementById('sheetIdInput').value.trim();
-  if (!v) { toast('Вставь ID таблицы', 'error'); return; }
-  sheetId = v;
-  localStorage.setItem('kb_zayavka_sheet_id', sheetId);
-  showScreen('main');
-  initMain();
-  toast('Настройки сохранены', 'success');
-}
-
-function goBack() {
-  if (accessToken && sheetId) showScreen('main');
-  else showScreen('login');
-}
-
-function initMain() {
   updateDateDisplay();
-  updateStats();
+  await loadTableData();
 }
 
-/* ── Date display ── */
-function updateDateDisplay() {
-  const now = new Date();
-  const day = DAYS_RU[now.getDay()];
-  const d = now.getDate();
-  const m = MONTHS_RU[now.getMonth()];
-  document.getElementById('dateDisplay').textContent = `${day}, ${d} ${m}`;
+function updateDateDisplay(){
+  const n=new Date();
+  document.getElementById('dateDisplay').textContent=`${DAYS[n.getDay()]}, ${n.getDate()} ${MONTHS[n.getMonth()]}`;
 }
 
 /* ── Sheets API ── */
-async function sheetsAppend(values) {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(SHEET_NAME+'!A:D')}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
-  const r = await fetch(url, {
-    method:'POST',
-    headers:{Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},
-    body:JSON.stringify({values:[values]})
-  });
-  if (!r.ok) { const t = await r.text(); throw new Error(t); }
+async function sheetsGet(range){
+  const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}`,{headers:{Authorization:'Bearer '+accessToken}});
+  if(!r.ok)throw new Error(await r.text());
   return r.json();
 }
 
-/* ── Submit ── */
-async function submitEntry() {
-  if (!accessToken) { toast('Сессия истекла, войди заново', 'error'); signOut(); return; }
+async function sheetsUpdate(range,values){
+  const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`,{
+    method:'PUT',headers:{Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},
+    body:JSON.stringify({values})
+  });
+  if(!r.ok)throw new Error(await r.text());
+  return r.json();
+}
 
-  const category = document.getElementById('f_category').value;
-  const payment = document.getElementById('f_payment').value;
-  const sum = document.getElementById('f_sum').value.trim();
-  const desc = document.getElementById('f_desc').value.trim();
+async function sheetsClear(range){
+  const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}:clear`,{
+    method:'POST',headers:{Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},body:'{}'
+  });
+  if(!r.ok)throw new Error(await r.text());
+  return r.json();
+}
 
-  if (!sum) { toast('Укажи сумму', 'error'); return; }
-  if (!desc) { toast('Укажи описание', 'error'); return; }
-
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Записываю...';
-
-  try {
-    const row = [category, payment, parseFloat(sum) || 0, desc];
-    await sheetsAppend(row);
-
-    const sumVal = parseFloat(sum) || 0;
-    toast(`Записано: ${fmt(sumVal)} ₸`, 'success');
-
-    recent.unshift({ category, payment, sum: sumVal, desc });
-    if (recent.length > 20) recent.pop();
-    renderRecent();
+/* ── Load data ── */
+async function loadTableData(){
+  try{
+    const data=await sheetsGet(SHEET_NAME+'!A3:E100');
+    const rows=data.values||[];
+    tableData=[];
+    for(const row of rows){
+      const a=(row[0]||'').toString().trim();
+      if(a.toLowerCase().includes('общая сумма'))break;
+      if(row.some(c=>c&&c.toString().trim())){
+        tableData.push({
+          num:a,
+          article:(row[1]||'').toString().trim(),
+          payment:(row[2]||'').toString().trim(),
+          sum:(row[3]||'').toString().trim(),
+          comment:(row[4]||'').toString().trim()
+        });
+      }
+    }
+    renderTable();
     updateStats();
+  }catch(e){
+    document.getElementById('tablePreview').innerHTML='<div class="empty-state">Ошибка: '+esc(e.message.slice(0,60))+'</div>';
+  }
+}
 
-    // Форма НЕ очищается автоматически, пользователь нажимает "Очистить" сам
+function renderTable(){
+  const el=document.getElementById('tablePreview');
+  if(!tableData.length){el.innerHTML='<div class="empty-state">Таблица пуста. Добавь первую позицию.</div>';return;}
+  let total=0,rows='';
+  for(const r of tableData){
+    const s=parseFloat(r.sum.replace(/\s/g,'').replace(',','.'))||0;
+    total+=s;
+    rows+=`<tr><td style="width:30px;text-align:center;color:var(--muted)">${esc(r.num)}</td><td>${esc(r.article)}</td><td>${esc(r.payment)}</td><td style="text-align:right;font-weight:600;white-space:nowrap">${r.sum?fmt(s)+' ₸':''}</td><td style="color:var(--text2)">${esc(r.comment)}</td></tr>`;
+  }
+  el.innerHTML=`<div class="table-preview"><table><tr><th>№</th><th>Статья расходов</th><th>Реквизиты</th><th style="text-align:right">Сумма</th><th>Комментарий</th></tr>${rows}<tr class="sum-row"><td colspan="3" style="text-align:right">Общая сумма:</td><td style="text-align:right">${fmt(total)} ₸</td><td></td></tr></table></div>`;
+}
 
-  } catch(e) {
-    toast('Ошибка: ' + e.message.slice(0, 80), 'error');
+function updateStats(){
+  let total=0;
+  for(const r of tableData)total+=parseFloat(r.sum.replace(/\s/g,'').replace(',','.'))||0;
+  document.getElementById('statCount').textContent=tableData.length;
+  document.getElementById('statSum').innerHTML=fmt(total)+' <small>₸</small>';
+}
+
+/* ── Submit ── */
+async function submitEntry(){
+  if(!accessToken){toast('Сессия истекла','error');signOut();return;}
+  const article=document.getElementById('f_article').value.trim();
+  const payment=document.getElementById('f_payment').value;
+  const sum=document.getElementById('f_sum').value.trim();
+  const comment=document.getElementById('f_comment').value.trim();
+  if(!article){toast('Укажи статью расходов','error');return;}
+  if(!sum){toast('Укажи сумму','error');return;}
+
+  const btn=document.getElementById('submitBtn');
+  btn.disabled=true;
+  btn.innerHTML='<span class="spinner"></span> Записываю...';
+
+  try{
+    const nextNum=tableData.length+1;
+    const targetRow=DATA_START+tableData.length;
+    const sumNum=parseFloat(sum)||0;
+
+    // A=№, B=Статья расходов, C=Реквизиты для оплаты, D=Сумма, E=Комментарий
+    await sheetsUpdate(SHEET_NAME+'!A'+targetRow+':E'+targetRow,[[nextNum,article,payment,sumNum,comment]]);
+
+    // Обновляем строку "Общая сумма" сразу после последней записи
+    const sumRow=targetRow+1;
+    await sheetsUpdate(SHEET_NAME+'!A'+sumRow+':E'+sumRow,[['','','Общая сумма:','=SUM(D'+DATA_START+':D'+targetRow+')','']]);
+
+    toast('Записано: '+fmt(sumNum)+' ₸','success');
+
+    document.getElementById('f_article').value='';
+    document.getElementById('f_payment').selectedIndex=0;
+    document.getElementById('f_sum').value='';
+    document.getElementById('f_comment').value='';
+
+    await loadTableData();
+  }catch(e){
+    toast('Ошибка: '+e.message.slice(0,80),'error');
   }
 
-  btn.disabled = false;
-  btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg> Записать в таблицу';
+  btn.disabled=false;
+  btn.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg> Записать в таблицу';
 }
 
-/* ── Clear form ── */
-function clearForm() {
-  document.getElementById('f_category').selectedIndex = 0;
-  document.getElementById('f_payment').selectedIndex = 0;
-  document.getElementById('f_sum').value = '';
-  document.getElementById('f_desc').value = '';
-  toast('Форма очищена', 'success');
+/* ── Clear table ── */
+function confirmClear(){
+  const el=document.getElementById('confirmDialog');
+  el.style.display='block';
+  el.innerHTML=`<div class="confirm-overlay" onclick="closeClear(event)"><div class="confirm-box"><h3>Очистить таблицу?</h3><p>Все записи в заявке будут удалены. Шапка таблицы сохранится. Это действие нельзя отменить.</p><div class="confirm-btns"><button class="confirm-cancel" onclick="closeClear()">Отмена</button><button class="confirm-ok" onclick="clearTable()">Очистить</button></div></div></div>`;
 }
 
-/* ── Recent entries ── */
-function renderRecent() {
-  const el = document.getElementById('recentList');
-  if (!recent.length) { el.innerHTML = '<div class="empty-state">Записей пока нет</div>'; return; }
-  el.innerHTML = recent.map((e, i) => `
-    <div class="entry-card" style="animation-delay:${i*0.05}s">
-      <div class="ec-top">
-        <div class="ec-desc">${esc(e.desc)}</div>
-        <div class="ec-sum">${fmt(e.sum)} ₸</div>
-      </div>
-      <div class="ec-meta">
-        <span>${esc(e.category)}</span>
-        <span>${esc(e.payment)}</span>
-      </div>
-    </div>`).join('');
+function closeClear(e){if(e&&e.target!==e.currentTarget)return;document.getElementById('confirmDialog').style.display='none';}
+
+async function clearTable(){
+  document.getElementById('confirmDialog').style.display='none';
+  if(!accessToken){toast('Сессия истекла','error');return;}
+  try{
+    await sheetsClear(SHEET_NAME+'!A3:E100');
+    // Восстанавливаем шаблон: 5 пустых строк с номерами + строка суммы
+    await sheetsUpdate(SHEET_NAME+'!A3:E8',[
+      [1,'','','',''],
+      [2,'','','',''],
+      [3,'','','',''],
+      [4,'','','',''],
+      [5,'','','',''],
+      ['','','Общая сумма:','=SUM(D3:D7)','']
+    ]);
+    toast('Таблица очищена','success');
+    await loadTableData();
+  }catch(e){toast('Ошибка: '+e.message.slice(0,80),'error');}
 }
 
-/* ── Stats ── */
-function updateStats() {
-  const count = recent.length;
-  const sum = recent.reduce((s, e) => s + e.sum, 0);
-  document.getElementById('statCount').textContent = count;
-  document.getElementById('statSum').innerHTML = fmt(sum) + ' <small>₸</small>';
+/* ── Helpers ── */
+function openSheet(){window.open('https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/edit','_blank');}
+
+function showScreen(name){
+  document.getElementById('loading-screen').style.display='none';
+  document.getElementById('login-screen').style.display=name==='login'?'flex':'none';
+  document.getElementById('main-screen').style.display=name==='main'?'block':'none';
+  const m={login:'login-screen',main:'main-screen'};
+  const el=document.getElementById(m[name]);
+  if(el){el.classList.remove('page-enter');void el.offsetWidth;el.classList.add('page-enter');}
 }
 
-/* ── Navigation ── */
-function openSheet() {
-  if(sheetId) window.open(`https://docs.google.com/spreadsheets/d/${sheetId}/edit`, '_blank');
-  else toast('Сначала укажи ID таблицы', 'error');
-}
-
-function showScreen(name) {
-  document.getElementById('loading-screen').style.display = 'none';
-  document.getElementById('login-screen').style.display = name === 'login' ? 'flex' : 'none';
-  document.getElementById('sheet-setup').style.display = name === 'sheet-setup' ? 'block' : 'none';
-  document.getElementById('main-screen').style.display = name === 'main' ? 'block' : 'none';
-  if (name === 'sheet-setup') document.getElementById('sheetIdInput').value = sheetId || '';
-  const screens = { login:'login-screen', 'sheet-setup':'sheet-setup', main:'main-screen' };
-  const el = document.getElementById(screens[name]);
-  if (el) { el.classList.remove('page-enter'); void el.offsetWidth; el.classList.add('page-enter'); }
-}
-
-function fmt(n) { return Math.round(n).toLocaleString('ru-RU'); }
-function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-
-function toast(msg, type='') {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = `show ${type}`;
-  setTimeout(() => el.className = '', 3200);
-}
+function fmt(n){return Math.round(n).toLocaleString('ru-RU');}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function toast(msg,type=''){const el=document.getElementById('toast');el.textContent=msg;el.className=`show ${type}`;setTimeout(()=>el.className='',3200);}
 </script>
 </body>
 </html>
