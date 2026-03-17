@@ -3,59 +3,75 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Заявка на финансирование КБ</title>
-<link href="https://fonts.googleapis.com/css2?family=Onest:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Заявка на финансирование — КБ</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
+/* ═══════ THEME VARIABLES ═══════ */
 :root {
-  --bg: #f7f8f7;
+  /* Light (default) */
+  --bg: #f7f9f7;
+  --bg2: #ffffff;
   --surface: #ffffff;
-  --surface2: #f0f2f0;
-  --surface3: #e8ece8;
-  --border: #d8e0d8;
-  --border2: #c0ccc0;
+  --surface2: #f0f4f0;
+  --surface3: #e8efe8;
+  --border: #d4e0d4;
+  --border2: #bdd0bd;
   --accent: #16a34a;
   --accent2: #15803d;
   --accent3: #22c55e;
-  --accent-glow: rgba(22,163,74,0.10);
-  --accent-glow2: rgba(22,163,74,0.05);
-  --accent-glow3: rgba(22,163,74,0.02);
-  --text: #1a1f1a;
-  --text2: #4a5a4a;
-  --muted: #8a9a8a;
-  --muted2: #b0c0b0;
+  --accent-dim: #16a34a;
+  --accent-glow: rgba(22, 163, 74, 0.10);
+  --accent-glow2: rgba(22, 163, 74, 0.06);
+  --text: #1a2e1a;
+  --text2: #374937;
+  --text3: #5a725a;
+  --muted: #8a9f8a;
+  --muted2: #b0c4b0;
   --danger: #dc2626;
-  --danger-bg: rgba(220,38,38,0.06);
-  --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03);
-  --shadow2: 0 2px 8px rgba(0,0,0,0.06), 0 8px 32px rgba(0,0,0,0.04);
-  --font-mono: 'JetBrains Mono', monospace;
-  --font-body: 'Onest', sans-serif;
+  --danger-bg: rgba(220, 38, 38, 0.06);
+  --yellow: #eab308;
+  --yellow-bg: rgba(234, 179, 8, 0.08);
+  --r: 10px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+  --shadow: 0 4px 16px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.08);
+  --font: 'IBM Plex Sans', -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
   --header-bg: rgba(255,255,255,0.85);
-  --input-bg: #f5f7f5;
+  --row-hover: rgba(22, 163, 74, 0.04);
+  --input-bg: #f7f9f7;
 }
 
+/* Dark */
 html.dark {
-  --bg: #0c0f0c;
-  --surface: #161b16;
-  --surface2: #1c231c;
-  --surface3: #232b23;
-  --border: #2a352a;
-  --border2: #354535;
-  --accent: #22c55e;
-  --accent2: #16a34a;
+  --bg: #0c1210;
+  --bg2: #111a16;
+  --surface: #162019;
+  --surface2: #1a2820;
+  --surface3: #1f3028;
+  --border: #2a3f32;
+  --border2: #3a5542;
+  --accent: #34d669;
+  --accent2: #22c55e;
   --accent3: #4ade80;
-  --accent-glow: rgba(34,197,94,0.12);
-  --accent-glow2: rgba(34,197,94,0.06);
-  --accent-glow3: rgba(34,197,94,0.03);
-  --text: #e0ece0;
-  --text2: #a0b8a0;
-  --muted: #5a7a5a;
-  --muted2: #3a5a3a;
-  --danger: #ef4444;
-  --danger-bg: rgba(239,68,68,0.08);
-  --shadow: 0 1px 3px rgba(0,0,0,0.2), 0 4px 16px rgba(0,0,0,0.15);
-  --shadow2: 0 2px 8px rgba(0,0,0,0.3), 0 8px 32px rgba(0,0,0,0.2);
-  --header-bg: rgba(12,15,12,0.9);
-  --input-bg: #1c231c;
+  --accent-dim: #22a050;
+  --accent-glow: rgba(52, 214, 105, 0.12);
+  --accent-glow2: rgba(52, 214, 105, 0.06);
+  --text: #d4eed4;
+  --text2: #a8cca8;
+  --text3: #7aaa7a;
+  --muted: #4a7a4a;
+  --muted2: #2f4f2f;
+  --danger: #f87171;
+  --danger-bg: rgba(248, 113, 113, 0.08);
+  --yellow: #facc15;
+  --yellow-bg: rgba(250, 204, 21, 0.08);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.2);
+  --shadow: 0 4px 16px rgba(0,0,0,0.3);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
+  --header-bg: rgba(17,26,22,0.9);
+  --row-hover: rgba(52, 214, 105, 0.06);
+  --input-bg: #111a16;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -63,585 +79,1000 @@ html.dark {
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font-body);
+  font-family: var(--font);
   min-height: 100dvh;
+  transition: background 0.35s ease, color 0.35s ease;
   overscroll-behavior: none;
-  transition: background 0.4s, color 0.4s;
 }
 
-body::before {
-  content: '';
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent 0%, var(--accent) 30%, var(--accent3) 50%, var(--accent) 70%, transparent 100%);
-  z-index: 999;
-  opacity: 0.7;
-}
-
-body::after {
-  content: '';
-  position: fixed; inset: 0;
-  background-image: 
-    linear-gradient(var(--accent-glow3) 1px, transparent 1px),
-    linear-gradient(90deg, var(--accent-glow3) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none; z-index: 0; opacity: 0.6;
-}
-html.dark body::after { opacity: 0.4; }
-
+/* ═══════ HEADER ═══════ */
 header {
   background: var(--header-bg);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border-bottom: 1px solid var(--border);
-  padding: 12px 20px;
-  display: flex; align-items: center; justify-content: space-between;
-  position: sticky; top: 0; z-index: 100;
+  padding: 0 20px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
 }
 
-.logo { display: flex; align-items: center; gap: 10px; }
-.logo-icon {
-  width: 36px; height: 36px;
-  background: var(--accent-glow);
-  border: 1px solid var(--accent);
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-mark {
+  width: 34px;
+  height: 34px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
   border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-mono); font-size: 11px; font-weight: 600;
-  color: var(--accent); position: relative; overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.25);
 }
-.logo-icon::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(135deg, var(--accent-glow) 0%, transparent 60%);
-  border-radius: inherit;
+
+.logo-label {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text);
+  line-height: 1.15;
 }
-.logo-text { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1.1; }
-.logo-text span { display: block; font-family: var(--font-mono); font-size: 9px; font-weight: 400; color: var(--muted); letter-spacing: 0.08em; margin-top: 2px; }
+
+.logo-label small {
+  display: block;
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--muted);
+  font-family: var(--mono);
+  letter-spacing: 0.05em;
+  margin-top: 1px;
+}
+
 .hright { display: flex; align-items: center; gap: 6px; }
 
 .user-chip {
-  font-size: 10px; color: var(--muted); font-family: var(--font-mono);
-  background: var(--accent-glow2); border: 1px solid var(--border);
-  border-radius: 6px; padding: 4px 10px; max-width: 120px;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: none;
+  font-size: 11px;
+  color: var(--text3);
+  font-family: var(--mono);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: none;
 }
 
 .hbtn {
-  font-size: 16px; background: none; border: 1px solid var(--border);
-  border-radius: 6px; cursor: pointer; padding: 4px 8px;
-  display: flex; align-items: center; justify-content: center;
-  transition: all 0.25s; color: var(--muted); line-height: 1;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--text3);
+  font-size: 15px;
+  transition: all 0.2s ease;
 }
-.hbtn:hover { border-color: var(--accent); color: var(--accent); }
+
+.hbtn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
 
 .hbtn-text {
-  font-size: 10px; font-family: var(--font-mono); color: var(--muted);
-  background: none; border: 1px solid var(--border); border-radius: 6px;
-  cursor: pointer; padding: 5px 10px; transition: all 0.25s;
-  text-transform: uppercase; letter-spacing: 0.06em; display: none;
+  font-size: 11px;
+  font-family: var(--mono);
+  color: var(--text3);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: none;
 }
-.hbtn-text:hover { color: var(--accent); border-color: var(--accent); }
+
+.hbtn-text:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ═══════ SCREENS ═══════ */
+.screen { display: none; padding: 24px 20px 100px; max-width: 600px; margin: 0 auto; }
 
 #loading-screen {
-  display: flex; align-items: center; justify-content: center;
-  flex-direction: column; min-height: calc(100dvh - 57px);
-  color: var(--muted); font-family: var(--font-mono); font-size: 12px;
-  gap: 16px; position: relative; z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: calc(100dvh - 56px);
+  gap: 16px;
 }
 
-.loading-dot {
-  width: 8px; height: 8px; background: var(--accent);
-  border-radius: 50%; animation: pulse 1.2s ease-in-out infinite;
-  box-shadow: 0 0 16px var(--accent-glow);
+.loader {
+  width: 36px;
+  height: 36px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
 }
-@keyframes pulse { 0%,100%{transform:scale(1);opacity:.6} 50%{transform:scale(1.5);opacity:1} }
 
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loader-text {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+/* ═══════ LOGIN ═══════ */
 #login-screen {
-  display: none; flex-direction: column; align-items: center; justify-content: center;
-  min-height: calc(100dvh - 57px); padding: 32px 24px; text-align: center;
-  position: relative; z-index: 2;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100dvh - 56px);
+  padding: 32px 24px;
+  text-align: center;
 }
 
-#main-screen {
-  display: none; padding: 20px; max-width: 520px; margin: 0 auto;
-  padding-bottom: 100px; position: relative; z-index: 2;
+.login-icon {
+  width: 72px;
+  height: 72px;
+  background: linear-gradient(135deg, var(--accent-glow), var(--accent-glow2));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  font-size: 28px;
 }
 
-.login-emblem {
-  width: 80px; height: 80px; background: var(--accent-glow);
-  border: 1px solid var(--accent); border-radius: 16px;
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 24px; position: relative; overflow: hidden;
+.login-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
 }
-.login-emblem::before {
-  content: ''; position: absolute; inset: -1px; border-radius: 17px;
-  background: linear-gradient(135deg, var(--accent-glow), transparent 60%); z-index: -1;
-}
-.login-emblem .emblem-icon { font-size: 28px; color: var(--accent); }
 
-.login-title { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
-.login-sub { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 32px; max-width: 280px; }
+.login-sub {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 32px;
+  max-width: 320px;
+}
 
 .google-btn {
-  display: flex; align-items: center; gap: 10px;
-  background: var(--surface); border: 1px solid var(--border);
-  color: var(--text); font-family: var(--font-body); font-size: 14px; font-weight: 500;
-  border-radius: 10px; padding: 12px 28px; cursor: pointer;
-  transition: all 0.25s; box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 14px 28px;
+  cursor: pointer;
+  width: 100%;
+  max-width: 320px;
+  transition: all 0.25s ease;
+  box-shadow: var(--shadow);
 }
-.google-btn:hover { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
-.google-btn:active { transform: scale(0.98); }
 
-.section-label {
-  font-family: var(--font-mono); font-size: 10px; font-weight: 500;
-  color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase;
-  margin-bottom: 16px; padding-left: 2px;
-  display: flex; align-items: center; gap: 8px;
-}
-.section-label::before {
-  content: ''; width: 3px; height: 3px;
-  background: var(--accent); border-radius: 50%; box-shadow: 0 0 6px var(--accent);
+.google-btn:hover { border-color: var(--accent); box-shadow: var(--shadow), 0 0 0 3px var(--accent-glow); transform: translateY(-1px); }
+.google-btn:active { transform: translateY(0) scale(0.99); }
+
+/* ═══════ SHEET SETUP ═══════ */
+#sheet-setup { display: none; padding-top: 60px; }
+
+.setup-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px 24px;
+  box-shadow: var(--shadow);
 }
 
-.field-group { margin-bottom: 14px; }
-.field-group label { display: block; font-size: 11px; font-weight: 500; color: var(--text2); margin-bottom: 5px; }
+.setup-card h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
 
-.field-group input,
-.field-group select,
-.field-group textarea {
-  width: 100%; background: var(--input-bg); border: 1px solid var(--border);
-  color: var(--text); font-family: var(--font-body); font-size: 14px;
-  padding: 11px 14px; border-radius: 10px; outline: none;
-  transition: all 0.25s; -webkit-appearance: none;
+.setup-card p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 20px;
 }
-.field-group select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a9a8a' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px;
-}
-html.dark .field-group select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235a7a5a' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-}
-.field-group input:focus, .field-group select:focus, .field-group textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
-.field-group input::placeholder, .field-group textarea::placeholder { color: var(--muted2); }
 
+.setup-card code {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+}
+
+/* ═══════ FORM FIELDS ═══════ */
+.field { margin-bottom: 14px; }
+
+.field-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text3);
+  margin-bottom: 5px;
+}
+
+.field-input {
+  width: 100%;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  padding: 10px 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.field-input::placeholder { color: var(--muted2); }
+.field-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow2); }
+
+select.field-input {
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a9f8a' stroke-width='1.5' stroke-linecap='round' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+
+select.field-input option { background: var(--surface); color: var(--text); }
+
+/* ═══════ BUTTONS ═══════ */
 .btn {
-  width: 100%; padding: 13px 20px; font-family: var(--font-body);
-  font-size: 14px; font-weight: 600; border: none; border-radius: 10px;
-  cursor: pointer; transition: all 0.25s;
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-}
-.btn-primary { background: var(--accent); color: #fff; box-shadow: 0 2px 12px rgba(22,163,74,0.25); }
-.btn-primary:hover { background: var(--accent2); box-shadow: 0 4px 20px rgba(22,163,74,0.35); transform: translateY(-1px); }
-.btn-primary:active { transform: translateY(0); }
-.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-.btn-ghost { background: var(--accent-glow); color: var(--accent); border: 1px solid transparent; }
-.btn-ghost:hover { border-color: var(--accent); }
-.btn-danger { background: var(--danger-bg); color: var(--danger); border: 1px solid transparent; }
-.btn-danger:hover { border-color: var(--danger); }
-
-.counter-bar {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 20px; padding: 10px 14px;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 10px; box-shadow: var(--shadow);
-}
-.counter-date { font-family: var(--font-mono); font-size: 12px; color: var(--accent); font-weight: 500; }
-.sheet-link {
-  font-family: var(--font-mono); font-size: 10px; color: var(--muted);
-  cursor: pointer; display: flex; align-items: center; gap: 4px;
-  padding: 4px 10px; border: 1px solid var(--border); border-radius: 6px;
-  transition: all 0.25s; text-transform: uppercase; letter-spacing: 0.06em;
-}
-.sheet-link:hover { color: var(--accent); border-color: var(--accent); }
-.sheet-link svg { width: 12px; height: 12px; }
-
-.stats-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-.stat-box {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 10px; padding: 12px 14px; box-shadow: var(--shadow);
-  position: relative; overflow: hidden;
-}
-.stat-box::before {
-  content: ''; position: absolute; bottom: 0; left: 0; right: 0;
-  height: 2px; background: linear-gradient(90deg, var(--accent), transparent); opacity: 0.4;
-}
-.stat-label { font-size: 10px; color: var(--muted); font-family: var(--font-mono); margin-bottom: 4px; }
-.stat-value { font-size: 22px; font-weight: 700; color: var(--text); }
-.stat-value small { font-size: 12px; color: var(--muted); font-weight: 400; }
-
-.table-preview {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 10px; overflow: hidden; margin-bottom: 16px; box-shadow: var(--shadow);
-}
-.table-preview table { width: 100%; border-collapse: collapse; font-size: 12px; }
-.table-preview th {
-  background: var(--accent); color: #fff; font-size: 10px; font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.05em; padding: 8px 10px; text-align: left;
-}
-.table-preview td { padding: 8px 10px; border-top: 1px solid var(--border); color: var(--text); }
-.table-preview tr:nth-child(even) td { background: var(--accent-glow3); }
-.table-preview .sum-row td { font-weight: 700; background: var(--accent-glow); color: var(--accent); border-top: 2px solid var(--accent); }
-
-.empty-state {
-  text-align: center; color: var(--muted); font-family: var(--font-mono);
-  font-size: 11px; padding: 24px; border: 1px dashed var(--border); border-radius: 10px;
+  width: 100%;
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px;
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
 }
 
-.actions-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.2);
+}
 
+.btn-primary:hover { box-shadow: 0 4px 16px rgba(22, 163, 74, 0.3); transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0) scale(0.99); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.btn-outline {
+  background: transparent;
+  color: var(--text3);
+  border: 1px solid var(--border);
+}
+
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+.btn-danger-outline {
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid var(--border);
+}
+
+.btn-danger-outline:hover { border-color: var(--danger); background: var(--danger-bg); }
+
+/* ═══════ MAIN SCREEN ═══════ */
+#main-screen { display: none; }
+
+/* Page title section */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.page-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.page-date {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--accent);
+  background: var(--accent-glow);
+  border: 1px solid var(--accent-glow);
+  border-radius: 6px;
+  padding: 4px 10px;
+}
+
+/* Author bar */
+.author-bar {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text3);
+  margin-bottom: 20px;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.author-bar .dot {
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ═══════ TABLE ═══════ */
+.table-wrapper {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+}
+
+.table-header-strip {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.table-header-strip .total-label {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table thead th {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text3);
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 2px solid var(--border);
+  background: var(--surface2);
+  white-space: nowrap;
+}
+
+table thead th:first-child { width: 36px; text-align: center; }
+table thead th.col-sum { width: 110px; text-align: right; }
+table thead th.col-comment { min-width: 100px; }
+
+table tbody tr {
+  transition: background 0.15s ease;
+}
+
+table tbody tr:hover { background: var(--row-hover); }
+
+table tbody td {
+  padding: 0;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+table tbody td:first-child {
+  text-align: center;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 10px 8px;
+  width: 36px;
+}
+
+table tbody td input,
+table tbody td textarea {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 13px;
+  padding: 10px 12px;
+  outline: none;
+  resize: none;
+  transition: background 0.15s;
+}
+
+table tbody td input:focus,
+table tbody td textarea:focus {
+  background: var(--accent-glow2);
+}
+
+table tbody td input::placeholder,
+table tbody td textarea::placeholder {
+  color: var(--muted2);
+}
+
+table tbody td.cell-sum input {
+  text-align: right;
+  font-family: var(--mono);
+  font-weight: 500;
+}
+
+/* Total row */
+.total-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-top: 2px solid var(--border);
+  background: var(--surface2);
+}
+
+.total-row .total-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text3);
+}
+
+.total-row .total-value {
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* ═══════ ACTION BUTTONS ═══════ */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.actions .btn-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-icon svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* Add row btn */
+.add-row-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 8px;
+  background: transparent;
+  border: 1px dashed var(--border);
+  border-radius: 0 0 12px 12px;
+  color: var(--muted);
+  font-family: var(--font);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: -1px;
+}
+
+.add-row-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow2); }
+
+/* ═══════ TOAST ═══════ */
 #toast {
-  position: fixed; bottom: 20px; left: 50%;
-  transform: translateX(-50%) translateY(80px);
-  background: var(--surface); border: 1px solid var(--border);
-  color: var(--text); font-family: var(--font-body); font-size: 13px; font-weight: 500;
-  padding: 10px 20px; border-radius: 10px; z-index: 1000;
-  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
-  box-shadow: var(--shadow2); white-space: nowrap;
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 13px;
+  font-family: var(--font);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 999;
+  white-space: nowrap;
+  box-shadow: var(--shadow-lg);
 }
+
 #toast.show { transform: translateX(-50%) translateY(0); }
 #toast.success { border-color: var(--accent); color: var(--accent); }
 #toast.error { border-color: var(--danger); color: var(--danger); }
 
-.spinner { width:16px;height:16px;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:inline-block; }
-@keyframes spin { to{transform:rotate(360deg)} }
-.page-enter { animation: pageIn .35s ease both; }
-@keyframes pageIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
-
-.confirm-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.4);
-  z-index: 500; display: flex; align-items: center; justify-content: center;
-  padding: 20px; backdrop-filter: blur(4px);
+/* ═══════ SPINNER ═══════ */
+.spinner-sm {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--border);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  vertical-align: middle;
+  margin-right: 6px;
 }
-.confirm-box {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 14px; padding: 24px; max-width: 340px; width: 100%;
-  box-shadow: var(--shadow2); text-align: center;
-}
-.confirm-box h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
-.confirm-box p { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.5; }
-.confirm-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.confirm-btns button { padding:10px;border-radius:8px;font-family:var(--font-body);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;border:none; }
-.confirm-cancel { background: var(--surface2); color: var(--text2); }
-.confirm-cancel:hover { background: var(--surface3); }
-.confirm-ok { background: var(--danger); color: #fff; }
-.confirm-ok:hover { opacity: 0.9; }
 
-@media (max-width:380px) { .stats-panel{grid-template-columns:1fr} .actions-bar{grid-template-columns:1fr} }
+/* ═══════ PAGE ENTER ═══════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up { animation: fadeUp 0.5s ease both; }
+
+/* ═══════ RESPONSIVE ═══════ */
+@media (max-width: 500px) {
+  .table-wrapper { border-radius: 8px; }
+  table thead th { font-size: 10px; padding: 8px 6px; }
+  table tbody td input,
+  table tbody td textarea { font-size: 12px; padding: 8px 6px; }
+  table tbody td:first-child { padding: 8px 4px; font-size: 11px; }
+  .total-row { padding: 10px 12px; }
+  .total-row .total-value { font-size: 16px; }
+  .page-title { font-size: 16px; }
+  .actions .btn-row { grid-template-columns: 1fr; }
+  .user-chip { display: none !important; }
+}
+
+/* ═══════ SCROLLBAR ═══════ */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ═══════ DELETE ROW ═══════ */
+.del-row-btn {
+  background: none;
+  border: none;
+  color: var(--muted2);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: all 0.15s;
+  line-height: 1;
+}
+
+.del-row-btn:hover { color: var(--danger); background: var(--danger-bg); }
 </style>
 </head>
 <body>
 
+<!-- ═══════ HEADER ═══════ -->
 <header>
   <div class="logo">
-    <div class="logo-icon">₸</div>
-    <div class="logo-text">Заявка КБ<span>финансирование</span></div>
+    <div class="logo-mark">₸</div>
+    <div class="logo-label">Заявка<small>КБ Контроль</small></div>
   </div>
   <div class="hright">
     <div class="user-chip" id="userChip"></div>
+    <button class="hbtn-text" id="configBtn" onclick="showScreen('sheet-setup')">ID</button>
     <button class="hbtn" id="themeBtn" onclick="toggleTheme()" title="Сменить тему">☀️</button>
-    <button class="hbtn-text" id="logoutBtn" onclick="signOut()">выйти</button>
+    <button class="hbtn-text" id="logoutBtn" onclick="signOut()">Выйти</button>
   </div>
 </header>
 
+<!-- ═══════ LOADING ═══════ -->
 <div id="loading-screen">
-  <div class="loading-dot"></div>
-  <span style="font-family:var(--font-mono);letter-spacing:0.1em;font-size:10px;color:var(--muted)">Загрузка...</span>
+  <div class="loader"></div>
+  <div class="loader-text">Загрузка...</div>
 </div>
 
+<!-- ═══════ LOGIN ═══════ -->
 <div id="login-screen">
-  <div class="login-emblem"><div class="emblem-icon">₸</div></div>
+  <div class="login-icon">📋</div>
   <div class="login-title">Заявка на финансирование</div>
-  <div class="login-sub">Составление заявки на оплату.<br>Данные записываются в Google Таблицу.</div>
+  <div class="login-sub">Формирование заявки для оплаты.<br>Данные сохраняются в Google Таблицу.</div>
   <button class="google-btn" onclick="signIn()">
     <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
     Войти через Google
   </button>
 </div>
 
+<!-- ═══════ SHEET SETUP ═══════ -->
+<div id="sheet-setup" class="screen">
+  <div class="setup-card fade-up">
+    <h2>Настройка таблицы</h2>
+    <p>Открой Google Таблицу и скопируй ID из адресной строки:<br><code>spreadsheets/d/<b>ID</b>/edit</code></p>
+    <div class="field">
+      <label class="field-label">ID таблицы</label>
+      <input class="field-input" type="text" id="sheetIdInput" placeholder="1DoH4OWoorOyJAtZkfKqhi3..." autocomplete="off" spellcheck="false">
+    </div>
+    <div class="field" style="margin-top:4px">
+      <label class="field-label">Название листа</label>
+      <input class="field-input" type="text" id="sheetNameInput" placeholder="Заявка" autocomplete="off" spellcheck="false">
+    </div>
+    <button class="btn btn-primary" style="margin-top:16px" onclick="saveConfig()">Сохранить</button>
+    <button class="btn btn-outline" style="margin-top:8px" onclick="goBack()">Назад</button>
+  </div>
+</div>
+
+<!-- ═══════ MAIN ═══════ -->
 <div id="main-screen">
-  <div class="counter-bar">
-    <span class="counter-date" id="dateDisplay"></span>
-    <span class="sheet-link" onclick="openSheet()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-      Таблица
-    </span>
-  </div>
-
-  <div class="stats-panel">
-    <div class="stat-box"><div class="stat-label">Позиций</div><div class="stat-value" id="statCount">...</div></div>
-    <div class="stat-box"><div class="stat-label">Общая сумма</div><div class="stat-value" id="statSum">... <small>₸</small></div></div>
-  </div>
-
-  <div class="section-label">Текущая заявка</div>
-  <div id="tablePreview"><div class="empty-state">Загрузка данных из таблицы...</div></div>
-
-  <div style="margin-top:24px">
-    <div class="section-label">Добавить позицию</div>
-
-    <div class="field-group">
-      <label>Статья расходов</label>
-      <input type="text" id="f_article" placeholder="Доставка брусов, кирпич М150..." autocomplete="off">
-    </div>
-    <div class="field-group">
-      <label>Реквизиты для оплаты</label>
-      <select id="f_payment">
-        <option>Каспи</option>
-        <option>Наличные</option>
-        <option>Перевод</option>
-        <option>Карта</option>
-      </select>
-    </div>
-    <div class="field-group">
-      <label>Сумма (₸)</label>
-      <input type="number" id="f_sum" placeholder="0" inputmode="decimal" min="0">
-    </div>
-    <div class="field-group">
-      <label>Комментарий</label>
-      <input type="text" id="f_comment" placeholder="Необязательно" autocomplete="off">
+  <div class="fade-up">
+    <!-- Title -->
+    <div class="page-header">
+      <div class="page-title">Заявка на финансирование</div>
+      <div class="page-date" id="todayDate"></div>
     </div>
 
-    <button class="btn btn-primary" id="submitBtn" onclick="submitEntry()" style="margin-bottom:12px">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-      Записать в таблицу
-    </button>
+    <!-- Author -->
+    <div class="author-bar">
+      <div class="dot"></div>
+      <span>Королевские бани</span>
+      <span style="margin-left:auto;color:var(--muted)" id="authorName"></span>
+    </div>
 
-    <div class="actions-bar">
-      <button class="btn btn-ghost" onclick="openSheet()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        Открыть таблицу
+    <!-- Table -->
+    <div class="table-wrapper" id="tableWrapper">
+      <div class="table-header-strip">
+        <span>Заявка на финансирование</span>
+        <span class="total-label" id="headerTotal">0 ₸</span>
+      </div>
+      <div style="overflow-x:auto">
+        <table id="mainTable">
+          <thead>
+            <tr>
+              <th>№</th>
+              <th>Статья расходов</th>
+              <th>Реквизиты для оплаты</th>
+              <th class="col-sum">Сумма, ₸</th>
+              <th class="col-comment">Комментарий</th>
+              <th style="width:32px"></th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+          </tbody>
+        </table>
+      </div>
+      <div class="total-row">
+        <span class="total-text">Общая сумма:</span>
+        <span class="total-value" id="totalValue">0 ₸</span>
+      </div>
+    </div>
+
+    <button class="add-row-btn" onclick="addRow()">+ Добавить строку</button>
+
+    <!-- Actions -->
+    <div class="actions">
+      <button class="btn btn-primary btn-icon" id="submitBtn" onclick="submitToSheet()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>
+        Записать в таблицу
       </button>
-      <button class="btn btn-danger" onclick="confirmClear()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
-        Очистить таблицу
-      </button>
+      <div class="btn-row">
+        <button class="btn btn-outline btn-icon" onclick="openSheet()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Открыть таблицу
+        </button>
+        <button class="btn btn-danger-outline btn-icon" onclick="clearForm()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+          Очистить
+        </button>
+      </div>
     </div>
   </div>
 </div>
 
-<div id="confirmDialog" style="display:none"></div>
 <div id="toast"></div>
 
 <script src="https://accounts.google.com/gsi/client" async></script>
 <script>
-/* ── Theme ── */
-(function(){
-  const s = localStorage.getItem('kb_zayavka_theme');
-  if(s==='dark'){document.documentElement.classList.add('dark');const b=document.getElementById('themeBtn');if(b)b.textContent='🌙';}
+/* ═══════ THEME ═══════ */
+(function initTheme() {
+  const saved = localStorage.getItem('kb_zayavka_theme');
+  /* Default = light, if saved dark then add class */
+  if (saved === 'dark') {
+    document.documentElement.classList.add('dark');
+    updateThemeBtn();
+  }
 })();
-function toggleTheme(){
-  const h=document.documentElement, d=h.classList.toggle('dark');
-  localStorage.setItem('kb_zayavka_theme',d?'dark':'light');
-  document.getElementById('themeBtn').textContent=d?'🌙':'☀️';
+
+function toggleTheme() {
+  const isDark = document.documentElement.classList.toggle('dark');
+  localStorage.setItem('kb_zayavka_theme', isDark ? 'dark' : 'light');
+  updateThemeBtn();
 }
 
-/* ── Config ── */
-const CLIENT_ID='747030737105-kpohc9g1rtfff9i8vels69r98r2akq3m.apps.googleusercontent.com';
-const SCOPES='https://www.googleapis.com/auth/spreadsheets';
-const SHEET_ID='1FqDrHom4ubamvE8z9Y2jgk6qN1o3H86NB--R_C33kDY';
-const SHEET_NAME='Лист1';
-const DATA_START=3;
+function updateThemeBtn() {
+  const isDark = document.documentElement.classList.contains('dark');
+  document.getElementById('themeBtn').textContent = isDark ? '☀️' : '🌙';
+}
 
-let accessToken=null, tokenClient=null, tableData=[];
+/* ═══════ CONFIG ═══════ */
+const CLIENT_ID = '747030737105-kpohc9g1rtfff9i8vels69r98r2akq3m.apps.googleusercontent.com';
+const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
 
-const DAYS=['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
-const MONTHS=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+let accessToken = null;
+let tokenClient = null;
+let sheetId = localStorage.getItem('kb_zayavka_sheet_id') || '';
+let sheetName = localStorage.getItem('kb_zayavka_sheet_name') || 'Заявка';
+let rowCount = 0;
+let userName = '';
 
-window.onload=()=>{
-  const ch=setInterval(()=>{
-    if(window.google&&google.accounts){
-      clearInterval(ch);
-      tokenClient=google.accounts.oauth2.initTokenClient({
-        client_id:CLIENT_ID, scope:SCOPES,
-        callback:(r)=>{ if(r.error){toast('Ошибка: '+r.error,'error');return;} accessToken=r.access_token; onSignedIn(); }
+/* ═══════ INIT ═══════ */
+window.onload = () => {
+  const check = setInterval(() => {
+    if (window.google && google.accounts) {
+      clearInterval(check);
+      tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: CLIENT_ID,
+        scope: SCOPES,
+        callback: (resp) => {
+          if (resp.error) { toast('Ошибка авторизации', 'error'); return; }
+          accessToken = resp.access_token;
+          onSignedIn();
+        }
       });
       showScreen('login');
     }
-  },100);
-  setTimeout(()=>{clearInterval(ch);showScreen('login');},6000);
+  }, 100);
+  setTimeout(() => { clearInterval(check); showScreen('login'); }, 6000);
 };
 
-function signIn(){tokenClient.requestAccessToken({prompt:''});}
+function signIn() { tokenClient.requestAccessToken({ prompt: '' }); }
 
-function signOut(){
-  if(accessToken)try{google.accounts.oauth2.revoke(accessToken,()=>{});}catch(e){}
-  accessToken=null;
-  document.getElementById('userChip').style.display='none';
-  document.getElementById('logoutBtn').style.display='none';
+function signOut() {
+  if (accessToken) try { google.accounts.oauth2.revoke(accessToken, ()=>{}); } catch(e){}
+  accessToken = null;
+  document.getElementById('userChip').style.display = 'none';
+  document.getElementById('configBtn').style.display = 'none';
+  document.getElementById('logoutBtn').style.display = 'none';
   showScreen('login');
 }
 
-async function onSignedIn(){
-  try{
-    const r=await fetch('https://www.googleapis.com/oauth2/v3/userinfo',{headers:{Authorization:'Bearer '+accessToken}});
-    const u=await r.json();
-    document.getElementById('userChip').textContent=u.email||'';
-    document.getElementById('userChip').style.display='block';
-    document.getElementById('logoutBtn').style.display='block';
-  }catch(e){}
+async function onSignedIn() {
+  try {
+    const r = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {headers:{Authorization:'Bearer '+accessToken}});
+    const u = await r.json();
+    userName = u.name || u.email || '';
+    const chip = document.getElementById('userChip');
+    chip.textContent = u.email || '';
+    chip.style.display = 'block';
+    document.getElementById('configBtn').style.display = 'block';
+    document.getElementById('logoutBtn').style.display = 'block';
+  } catch(e){}
+
+  if (!sheetId) { showScreen('sheet-setup'); return; }
   showScreen('main');
-  updateDateDisplay();
-  await loadTableData();
+  initMain();
 }
 
-function updateDateDisplay(){
-  const n=new Date();
-  document.getElementById('dateDisplay').textContent=`${DAYS[n.getDay()]}, ${n.getDate()} ${MONTHS[n.getMonth()]}`;
+function saveConfig() {
+  const id = document.getElementById('sheetIdInput').value.trim();
+  const name = document.getElementById('sheetNameInput').value.trim();
+  if (!id) { toast('Вставь ID таблицы', 'error'); return; }
+  sheetId = id;
+  sheetName = name || 'Заявка';
+  localStorage.setItem('kb_zayavka_sheet_id', sheetId);
+  localStorage.setItem('kb_zayavka_sheet_name', sheetName);
+  showScreen('main');
+  initMain();
+  toast('Настройки сохранены', 'success');
 }
 
-/* ── Sheets API ── */
-async function sheetsGet(range){
-  const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}`,{headers:{Authorization:'Bearer '+accessToken}});
-  if(!r.ok)throw new Error(await r.text());
-  return r.json();
+function goBack() {
+  if (accessToken && sheetId) showScreen('main');
+  else showScreen('login');
 }
 
-async function sheetsUpdate(range,values){
-  const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`,{
-    method:'PUT',headers:{Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},
-    body:JSON.stringify({values})
+/* ═══════ MAIN INIT ═══════ */
+function initMain() {
+  /* Today's date */
+  const now = new Date();
+  const dd = String(now.getDate()).padStart(2, '0');
+  const mm = String(now.getMonth() + 1).padStart(2, '0');
+  const yyyy = now.getFullYear();
+  document.getElementById('todayDate').textContent = dd + '.' + mm + '.' + yyyy;
+  document.getElementById('authorName').textContent = userName;
+
+  /* Init table rows */
+  if (rowCount === 0) {
+    for (let i = 0; i < 5; i++) addRow();
+  }
+  recalc();
+}
+
+/* ═══════ TABLE ROWS ═══════ */
+function addRow() {
+  rowCount++;
+  const tr = document.createElement('tr');
+  tr.setAttribute('data-row', rowCount);
+  tr.innerHTML = `
+    <td>${rowCount}</td>
+    <td><input type="text" placeholder="Статья расходов..." data-field="article"></td>
+    <td><input type="text" placeholder="Реквизиты..." data-field="details"></td>
+    <td class="cell-sum"><input type="text" inputmode="decimal" placeholder="0" data-field="sum" oninput="recalc()"></td>
+    <td><input type="text" placeholder="Комментарий..." data-field="comment"></td>
+    <td><button class="del-row-btn" onclick="deleteRow(this)" title="Удалить">✕</button></td>
+  `;
+  document.getElementById('tableBody').appendChild(tr);
+  recalc();
+}
+
+function deleteRow(btn) {
+  const tr = btn.closest('tr');
+  tr.remove();
+  renumberRows();
+  recalc();
+}
+
+function renumberRows() {
+  const rows = document.querySelectorAll('#tableBody tr');
+  rowCount = rows.length;
+  rows.forEach((tr, i) => {
+    tr.setAttribute('data-row', i + 1);
+    tr.querySelector('td:first-child').textContent = i + 1;
   });
-  if(!r.ok)throw new Error(await r.text());
-  return r.json();
 }
 
-async function sheetsClear(range){
-  const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}:clear`,{
-    method:'POST',headers:{Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},body:'{}'
+function recalc() {
+  let total = 0;
+  document.querySelectorAll('#tableBody input[data-field="sum"]').forEach(inp => {
+    const v = parseFloat(inp.value.replace(/\s/g, '').replace(',', '.'));
+    if (!isNaN(v)) total += v;
   });
-  if(!r.ok)throw new Error(await r.text());
-  return r.json();
+  const formatted = Math.round(total).toLocaleString('ru-RU') + ' ₸';
+  document.getElementById('totalValue').textContent = formatted;
+  document.getElementById('headerTotal').textContent = formatted;
 }
 
-/* ── Load data ── */
-async function loadTableData(){
-  try{
-    const data=await sheetsGet(SHEET_NAME+'!A3:E100');
-    const rows=data.values||[];
-    tableData=[];
-    for(const row of rows){
-      const a=(row[0]||'').toString().trim();
-      if(a.toLowerCase().includes('общая сумма'))break;
-      if(row.some(c=>c&&c.toString().trim())){
-        tableData.push({
-          num:a,
-          article:(row[1]||'').toString().trim(),
-          payment:(row[2]||'').toString().trim(),
-          sum:(row[3]||'').toString().trim(),
-          comment:(row[4]||'').toString().trim()
-        });
-      }
+/* ═══════ SUBMIT ═══════ */
+async function submitToSheet() {
+  if (!accessToken) { toast('Сессия истекла, войди заново', 'error'); signOut(); return; }
+
+  const rows = document.querySelectorAll('#tableBody tr');
+  const data = [];
+
+  rows.forEach(tr => {
+    const article = tr.querySelector('[data-field="article"]').value.trim();
+    const details = tr.querySelector('[data-field="details"]').value.trim();
+    const sum = tr.querySelector('[data-field="sum"]').value.trim();
+    const comment = tr.querySelector('[data-field="comment"]').value.trim();
+
+    /* Пропускаем полностью пустые строки */
+    if (!article && !details && !sum && !comment) return;
+
+    const num = tr.querySelector('td:first-child').textContent;
+    const sumNum = parseFloat(sum.replace(/\s/g, '').replace(',', '.')) || 0;
+    data.push([num, article, details, sumNum, comment]);
+  });
+
+  if (data.length === 0) { toast('Заполни хотя бы одну строку', 'error'); return; }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-sm"></span>Запись...';
+
+  try {
+    /* Получаем дату */
+    const now = new Date();
+    const dd = String(now.getDate()).padStart(2, '0');
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const yyyy = now.getFullYear();
+    const dateStr = dd + '.' + mm + '.' + yyyy;
+
+    /* Заголовок заявки */
+    const headerRow = ['Заявка на финансирование «Королевские бани» (' + (userName || 'Менеджер') + ')', '', '', '', dateStr];
+    const colHeaders = ['№', 'Статья расходов', 'Реквизиты для оплаты', 'Сумма, тг', 'Комментарий'];
+
+    /* Общая сумма */
+    let totalSum = 0;
+    data.forEach(r => { totalSum += r[3]; });
+    const totalRow = ['', '', '', 'Общая сумма:', Math.round(totalSum)];
+
+    /* Сборка всех строк */
+    const allRows = [headerRow, colHeaders, ...data, [''], totalRow];
+
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(sheetName + '!A1')}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
+    const r = await fetch(url, {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ values: allRows })
+    });
+
+    if (!r.ok) {
+      const errText = await r.text();
+      throw new Error(errText);
     }
-    renderTable();
-    updateStats();
-  }catch(e){
-    document.getElementById('tablePreview').innerHTML='<div class="empty-state">Ошибка: '+esc(e.message.slice(0,60))+'</div>';
+
+    toast('Заявка записана в таблицу!', 'success');
+  } catch(e) {
+    toast('Ошибка: ' + e.message.slice(0, 80), 'error');
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="width:16px;height:16px"><path d="M20 6L9 17l-5-5"/></svg> Записать в таблицу';
+}
+
+/* ═══════ CLEAR ═══════ */
+function clearForm() {
+  if (!confirm('Очистить форму? Все введённые данные будут удалены.')) return;
+  document.getElementById('tableBody').innerHTML = '';
+  rowCount = 0;
+  for (let i = 0; i < 5; i++) addRow();
+  recalc();
+  toast('Форма очищена', 'success');
+}
+
+/* ═══════ OPEN SHEET ═══════ */
+function openSheet() {
+  if (sheetId) window.open('https://docs.google.com/spreadsheets/d/' + sheetId + '/edit', '_blank');
+  else toast('Сначала укажи ID таблицы', 'error');
+}
+
+/* ═══════ NAVIGATION ═══════ */
+function showScreen(name) {
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = name === 'login' ? 'flex' : 'none';
+  document.getElementById('sheet-setup').style.display = name === 'sheet-setup' ? 'block' : 'none';
+  document.getElementById('main-screen').style.display = name === 'main' ? 'block' : 'none';
+
+  if (name === 'sheet-setup') {
+    document.getElementById('sheetIdInput').value = sheetId || '';
+    document.getElementById('sheetNameInput').value = sheetName || 'Заявка';
   }
 }
 
-function renderTable(){
-  const el=document.getElementById('tablePreview');
-  if(!tableData.length){el.innerHTML='<div class="empty-state">Таблица пуста. Добавь первую позицию.</div>';return;}
-  let total=0,rows='';
-  for(const r of tableData){
-    const s=parseFloat(r.sum.replace(/\s/g,'').replace(',','.'))||0;
-    total+=s;
-    rows+=`<tr><td style="width:30px;text-align:center;color:var(--muted)">${esc(r.num)}</td><td>${esc(r.article)}</td><td>${esc(r.payment)}</td><td style="text-align:right;font-weight:600;white-space:nowrap">${r.sum?fmt(s)+' ₸':''}</td><td style="color:var(--text2)">${esc(r.comment)}</td></tr>`;
-  }
-  el.innerHTML=`<div class="table-preview"><table><tr><th>№</th><th>Статья расходов</th><th>Реквизиты</th><th style="text-align:right">Сумма</th><th>Комментарий</th></tr>${rows}<tr class="sum-row"><td colspan="3" style="text-align:right">Общая сумма:</td><td style="text-align:right">${fmt(total)} ₸</td><td></td></tr></table></div>`;
+/* ═══════ TOAST ═══════ */
+function toast(msg, type) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'show ' + (type || '');
+  setTimeout(() => el.className = '', 3000);
 }
-
-function updateStats(){
-  let total=0;
-  for(const r of tableData)total+=parseFloat(r.sum.replace(/\s/g,'').replace(',','.'))||0;
-  document.getElementById('statCount').textContent=tableData.length;
-  document.getElementById('statSum').innerHTML=fmt(total)+' <small>₸</small>';
-}
-
-/* ── Submit ── */
-async function submitEntry(){
-  if(!accessToken){toast('Сессия истекла','error');signOut();return;}
-  const article=document.getElementById('f_article').value.trim();
-  const payment=document.getElementById('f_payment').value;
-  const sum=document.getElementById('f_sum').value.trim();
-  const comment=document.getElementById('f_comment').value.trim();
-  if(!article){toast('Укажи статью расходов','error');return;}
-  if(!sum){toast('Укажи сумму','error');return;}
-
-  const btn=document.getElementById('submitBtn');
-  btn.disabled=true;
-  btn.innerHTML='<span class="spinner"></span> Записываю...';
-
-  try{
-    const nextNum=tableData.length+1;
-    const targetRow=DATA_START+tableData.length;
-    const sumNum=parseFloat(sum)||0;
-
-    // A=№, B=Статья расходов, C=Реквизиты для оплаты, D=Сумма, E=Комментарий
-    await sheetsUpdate(SHEET_NAME+'!A'+targetRow+':E'+targetRow,[[nextNum,article,payment,sumNum,comment]]);
-
-    // Обновляем строку "Общая сумма" сразу после последней записи
-    const sumRow=targetRow+1;
-    await sheetsUpdate(SHEET_NAME+'!A'+sumRow+':E'+sumRow,[['','','Общая сумма:','=SUM(D'+DATA_START+':D'+targetRow+')','']]);
-
-    toast('Записано: '+fmt(sumNum)+' ₸','success');
-
-    document.getElementById('f_article').value='';
-    document.getElementById('f_payment').selectedIndex=0;
-    document.getElementById('f_sum').value='';
-    document.getElementById('f_comment').value='';
-
-    await loadTableData();
-  }catch(e){
-    toast('Ошибка: '+e.message.slice(0,80),'error');
-  }
-
-  btn.disabled=false;
-  btn.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg> Записать в таблицу';
-}
-
-/* ── Clear table ── */
-function confirmClear(){
-  const el=document.getElementById('confirmDialog');
-  el.style.display='block';
-  el.innerHTML=`<div class="confirm-overlay" onclick="closeClear(event)"><div class="confirm-box"><h3>Очистить таблицу?</h3><p>Все записи в заявке будут удалены. Шапка таблицы сохранится. Это действие нельзя отменить.</p><div class="confirm-btns"><button class="confirm-cancel" onclick="closeClear()">Отмена</button><button class="confirm-ok" onclick="clearTable()">Очистить</button></div></div></div>`;
-}
-
-function closeClear(e){if(e&&e.target!==e.currentTarget)return;document.getElementById('confirmDialog').style.display='none';}
-
-async function clearTable(){
-  document.getElementById('confirmDialog').style.display='none';
-  if(!accessToken){toast('Сессия истекла','error');return;}
-  try{
-    await sheetsClear(SHEET_NAME+'!A3:E100');
-    // Восстанавливаем шаблон: 5 пустых строк с номерами + строка суммы
-    await sheetsUpdate(SHEET_NAME+'!A3:E8',[
-      [1,'','','',''],
-      [2,'','','',''],
-      [3,'','','',''],
-      [4,'','','',''],
-      [5,'','','',''],
-      ['','','Общая сумма:','=SUM(D3:D7)','']
-    ]);
-    toast('Таблица очищена','success');
-    await loadTableData();
-  }catch(e){toast('Ошибка: '+e.message.slice(0,80),'error');}
-}
-
-/* ── Helpers ── */
-function openSheet(){window.open('https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/edit','_blank');}
-
-function showScreen(name){
-  document.getElementById('loading-screen').style.display='none';
-  document.getElementById('login-screen').style.display=name==='login'?'flex':'none';
-  document.getElementById('main-screen').style.display=name==='main'?'block':'none';
-  const m={login:'login-screen',main:'main-screen'};
-  const el=document.getElementById(m[name]);
-  if(el){el.classList.remove('page-enter');void el.offsetWidth;el.classList.add('page-enter');}
-}
-
-function fmt(n){return Math.round(n).toLocaleString('ru-RU');}
-function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
-function toast(msg,type=''){const el=document.getElementById('toast');el.textContent=msg;el.className=`show ${type}`;setTimeout(()=>el.className='',3200);}
 </script>
 </body>
 </html>
