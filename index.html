@@ -240,6 +240,10 @@ header {
 
 .section-head.owner .sh-text { color: var(--yellow); }
 .section-head.manager .sh-text { color: var(--accent3); }
+.section-head.personal .sh-icon {
+  background: rgba(139,92,246,0.12); border: 1px solid rgba(139,92,246,0.18);
+}
+.section-head.personal .sh-text { color: #a78bfa; }
 
 .section-head::after {
   content: ''; flex: 1; height: 1px;
@@ -451,6 +455,15 @@ input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-gl
     <div class="modules" id="managerModules"></div>
   </div>
 
+  <!-- PERSONAL SECTION -->
+  <div class="section">
+    <div class="section-head personal">
+      <div class="sh-icon">🙋</div>
+      <div class="sh-text">Личное</div>
+    </div>
+    <div class="modules" id="personalModules"></div>
+  </div>
+
   <!-- SETTINGS -->
   <div class="section">
     <div class="section-head manager">
@@ -483,7 +496,8 @@ const MODULES = [
   { id: 'workers', title: 'Контроль рабочих',    desc: 'Ежедневный учёт · план / факт',          icon: '👷', url: 'index_workers.html', role: 'manager' },
   { id: 'rashody', title: 'Расходы',             desc: 'Ежедневный журнал расходов · Matrix UI',  icon: '💸', url: 'rashody.html', role: 'manager' },
   { id: 'zayavka', title: 'Заявка на финансирование', desc: 'Составление заявки на оплату · Google Sheets', icon: '₸', url: 'zayavka.html', role: 'manager' },
-  { id: 'salary', title: 'Зарплата', desc: 'Трекер заработка · выплаты · live счётчик', icon: '💰', url: 'salary.html', role: 'manager' },
+  { id: 'salary',  title: 'Зарплата', desc: 'Трекер заработка · выплаты · live счётчик',  icon: '💰', url: 'salary.html',        role: 'personal' },
+  { id: 'habits',  title: 'Привычки', desc: '6 недель · вода · отжимания · AirPods 4',    icon: '🎧', url: 'habit-tracker.html', role: 'personal' },
 ];
 
 /* ══════ AUTH ══════ */
@@ -584,26 +598,22 @@ function goBack() { showScreen('main'); }
 
 /* ══════ RENDER MODULES ══════ */
 function renderModules() {
-  const ownerMods = MODULES.filter(m => m.role === 'owner');
-  const managerMods = MODULES.filter(m => m.role === 'manager');
+  const ownerMods    = MODULES.filter(m => m.role === 'owner');
+  const managerMods  = MODULES.filter(m => m.role === 'manager');
+  const personalMods = MODULES.filter(m => m.role === 'personal');
 
-  document.getElementById('ownerModules').innerHTML = ownerMods.map(m => `
+  const cardHtml = m => `
     <a class="module-card" href="${m.url}" onclick="navigateModule(event,'${m.url}')">
       <div class="mc-icon">${m.icon}</div>
       <div class="mc-info">
         <h3>${m.title}</h3>
         <p>${m.desc}</p>
       </div>
-    </a>`).join('');
+    </a>`;
 
-  document.getElementById('managerModules').innerHTML = managerMods.map(m => `
-    <a class="module-card" href="${m.url}" onclick="navigateModule(event,'${m.url}')">
-      <div class="mc-icon">${m.icon}</div>
-      <div class="mc-info">
-        <h3>${m.title}</h3>
-        <p>${m.desc}</p>
-      </div>
-    </a>`).join('');
+  document.getElementById('ownerModules').innerHTML   = ownerMods.map(cardHtml).join('');
+  document.getElementById('managerModules').innerHTML  = managerMods.map(cardHtml).join('');
+  document.getElementById('personalModules').innerHTML = personalMods.map(cardHtml).join('');
 }
 
 function navigateModule(e, url) {
