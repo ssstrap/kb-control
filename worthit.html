@@ -176,9 +176,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .budget-nums{text-align:right}
 .budget-remain{font-family:var(--mono);font-size:14px;font-weight:600}
 .budget-total{font-size:11px;color:var(--text3);margin-top:2px}
-.budget-item{cursor:pointer;transition:all .25s}
+.budget-item{cursor:pointer;transition:all .25s;display:block;padding:0 !important}
 .budget-item:hover{border-color:var(--gb2)}
-.budget-expand{display:none;padding:12px 0 4px;border-top:1px solid var(--gb);margin-top:12px}
+.budget-item-row{display:flex;align-items:center;gap:14px;padding:16px}
+.budget-expand{display:none;padding:0 16px 12px}
 .budget-expand.open{display:block;animation:fadeUp .3s cubic-bezier(.2,.8,.2,1)}
 .spend-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)}
 .spend-row:last-child{border:none}
@@ -189,6 +190,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .spend-empty{font-size:13px;color:var(--text3);padding:8px 0;text-align:center}
 .budget-arrow{font-size:10px;color:var(--text3);margin-left:4px;transition:transform .25s;display:inline-block}
 .budget-arrow.open{transform:rotate(180deg)}
+.spend-divider{height:1px;background:rgba(255,255,255,.06);margin:0}
 
 /* Wishlist */
 .section-label{font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text3);margin-bottom:14px}
@@ -514,8 +516,8 @@ function renderBudgetTab(){
     const remain=b.limit-b.spent;
     const pct=b.limit>0?Math.min((b.spent/b.limit)*100,100):0;
     const color=b.limit===0?'var(--text3)':remain>b.limit*0.3?'var(--green)':remain>0?'var(--orange)':'var(--red)';
-    return`<div class="budget-item" onclick="toggleBudgetExpand('${cat.id}',this)">
-      <div style="display:flex;align-items:center;gap:14px;width:100%">
+    return`<div class="budget-item" onclick="toggleBudgetExpand('${cat.id}')">
+      <div class="budget-item-row">
         <div class="budget-icon">${cat.icon}</div>
         <div class="budget-info">
           <div class="budget-name">${cat.name} <span class="budget-arrow" id="arrow-${cat.id}">▾</span></div>
@@ -527,13 +529,14 @@ function renderBudgetTab(){
         </div>
       </div>
       <div class="budget-expand" id="expand-${cat.id}">
-        <div class="spend-empty">Загрузка...</div>
+        <div class="spend-divider"></div>
+        <div style="padding-top:10px"><div class="spend-empty">Загрузка...</div></div>
       </div>
     </div>`;
   }).join('');
 }
 
-async function toggleBudgetExpand(catId,el){
+async function toggleBudgetExpand(catId){
   const expand=document.getElementById('expand-'+catId);
   const arrow=document.getElementById('arrow-'+catId);
   const isOpen=expand.classList.contains('open');
@@ -547,8 +550,9 @@ async function toggleBudgetExpand(catId,el){
     spendingsCache[catId]=data||[];
   }
   const items=spendingsCache[catId];
-  if(!items.length){expand.innerHTML='<div class="spend-empty">Трат нет</div>';return;}
-  expand.innerHTML=items.map(s=>{
+  const inner=expand.querySelector('div:last-child');
+  if(!items.length){inner.innerHTML='<div class="spend-empty">Трат нет</div>';return;}
+  inner.innerHTML=items.map(s=>{
     const d=new Date(s.created_at);
     const dateStr=String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+d.getFullYear();
     return`<div class="spend-row"><div class="spend-left"><div class="spend-name">${esc(s.name||'Покупка')}</div><div class="spend-date">${dateStr}</div></div><span class="spend-amount">${formatMoney(s.amount)} ₸</span></div>`;
