@@ -176,6 +176,19 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .budget-nums{text-align:right}
 .budget-remain{font-family:var(--mono);font-size:14px;font-weight:600}
 .budget-total{font-size:11px;color:var(--text3);margin-top:2px}
+.budget-item{cursor:pointer;transition:all .25s}
+.budget-item:hover{border-color:var(--gb2)}
+.budget-expand{display:none;padding:12px 0 4px;border-top:1px solid var(--gb);margin-top:12px}
+.budget-expand.open{display:block;animation:fadeUp .3s cubic-bezier(.2,.8,.2,1)}
+.spend-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.spend-row:last-child{border:none}
+.spend-left{flex:1;min-width:0}
+.spend-name{font-size:14px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.spend-date{font-size:11px;color:var(--text3);margin-top:2px}
+.spend-amount{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--red);white-space:nowrap;margin-left:12px}
+.spend-empty{font-size:13px;color:var(--text3);padding:8px 0;text-align:center}
+.budget-arrow{font-size:10px;color:var(--text3);margin-left:4px;transition:transform .25s;display:inline-block}
+.budget-arrow.open{transform:rotate(180deg)}
 
 /* Wishlist */
 .section-label{font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text3);margin-bottom:14px}
@@ -486,9 +499,12 @@ async function confirmPurchase(){
     b.spent=newSpent;
   }
   btn.textContent='✓ Записано';toast('Покупка записана','success');
+  delete spendingsCache[currentCat];
 }
 
 // ==================== BUDGET TAB ====================
+const spendingsCache={};
+
 function renderBudgetTab(){
   const list=document.getElementById('budgetList'),empty=document.getElementById('budgetEmpty');
   if(!Object.keys(budgets).length){list.innerHTML='';empty.style.display='block';return;}
@@ -498,7 +514,44 @@ function renderBudgetTab(){
     const remain=b.limit-b.spent;
     const pct=b.limit>0?Math.min((b.spent/b.limit)*100,100):0;
     const color=b.limit===0?'var(--text3)':remain>b.limit*0.3?'var(--green)':remain>0?'var(--orange)':'var(--red)';
-    return`<div class="budget-item"><div class="budget-icon">${cat.icon}</div><div class="budget-info"><div class="budget-name">${cat.name}</div><div class="budget-bar"><div class="budget-bar-fill" style="width:${pct}%;background:${color}"></div></div></div><div class="budget-nums"><div class="budget-remain" style="color:${color}">${b.limit===0?'Не задан':formatMoney(remain)+' ₸'}</div><div class="budget-total">${b.limit>0?'из '+formatMoney(b.limit):''}</div></div></div>`;
+    return`<div class="budget-item" onclick="toggleBudgetExpand('${cat.id}',this)">
+      <div style="display:flex;align-items:center;gap:14px;width:100%">
+        <div class="budget-icon">${cat.icon}</div>
+        <div class="budget-info">
+          <div class="budget-name">${cat.name} <span class="budget-arrow" id="arrow-${cat.id}">▾</span></div>
+          <div class="budget-bar"><div class="budget-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+        </div>
+        <div class="budget-nums">
+          <div class="budget-remain" style="color:${color}">${b.limit===0?'Не задан':formatMoney(remain)+' ₸'}</div>
+          <div class="budget-total">${b.limit>0?'из '+formatMoney(b.limit):''}</div>
+        </div>
+      </div>
+      <div class="budget-expand" id="expand-${cat.id}">
+        <div class="spend-empty">Загрузка...</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function toggleBudgetExpand(catId,el){
+  const expand=document.getElementById('expand-'+catId);
+  const arrow=document.getElementById('arrow-'+catId);
+  const isOpen=expand.classList.contains('open');
+  document.querySelectorAll('.budget-expand').forEach(e=>e.classList.remove('open'));
+  document.querySelectorAll('.budget-arrow').forEach(a=>a.classList.remove('open'));
+  if(isOpen)return;
+  expand.classList.add('open');
+  arrow.classList.add('open');
+  if(!spendingsCache[catId]){
+    const{data}=await sb.from('spendings').select('name,amount,created_at').eq('user_id',userId).eq('category',catId).order('created_at',{ascending:false}).limit(50);
+    spendingsCache[catId]=data||[];
+  }
+  const items=spendingsCache[catId];
+  if(!items.length){expand.innerHTML='<div class="spend-empty">Трат нет</div>';return;}
+  expand.innerHTML=items.map(s=>{
+    const d=new Date(s.created_at);
+    const dateStr=String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+d.getFullYear();
+    return`<div class="spend-row"><div class="spend-left"><div class="spend-name">${esc(s.name||'Покупка')}</div><div class="spend-date">${dateStr}</div></div><span class="spend-amount">${formatMoney(s.amount)} ₸</span></div>`;
   }).join('');
 }
 
