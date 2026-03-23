@@ -6,6 +6,7 @@
 <title>КБ Контроль</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏗</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 :root {
   --bg: #0b1120;
@@ -123,10 +124,6 @@ header {
   margin: 0 auto; padding-bottom: 40px;
 }
 
-#sheet-setup {
-  display: none; padding: 24px 20px; max-width: 480px; margin: 0 auto;
-}
-
 /* ══════ LOGIN ══════ */
 .login-badge {
   display: inline-flex; align-items: center; gap: 6px;
@@ -154,19 +151,43 @@ header {
 
 .login-sub {
   color: var(--muted); font-size: 14px; line-height: 1.7;
-  margin-bottom: 40px; max-width: 320px;
+  margin-bottom: 32px; max-width: 320px;
 }
 
-.google-btn {
+/* Auth form */
+.auth-form {
+  width: 100%; max-width: 340px;
+}
+.auth-input {
+  width: 100%; background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r); color: var(--text); font-family: inherit;
+  font-size: 15px; padding: 14px 16px; outline: none;
+  transition: all 0.2s; margin-bottom: 10px;
+}
+.auth-input::placeholder { color: var(--muted2); }
+.auth-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow2); }
+
+.auth-btn {
   display: flex; align-items: center; justify-content: center; gap: 12px;
   background: var(--accent); border: none;
   border-radius: var(--r); color: #fff;
   font-family: inherit; font-size: 15px; font-weight: 600;
-  padding: 16px 32px; cursor: pointer; width: 100%; max-width: 340px;
+  padding: 16px 32px; cursor: pointer; width: 100%;
   transition: all 0.2s; box-shadow: 0 4px 20px rgba(16,185,129,0.25);
+  margin-bottom: 10px;
 }
-.google-btn:hover { background: var(--accent2); transform: translateY(-1px); box-shadow: 0 6px 28px rgba(16,185,129,0.3); }
-.google-btn:active { transform: translateY(0); }
+.auth-btn:hover { background: var(--accent2); transform: translateY(-1px); box-shadow: 0 6px 28px rgba(16,185,129,0.3); }
+.auth-btn:active { transform: translateY(0); }
+.auth-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.auth-error {
+  font-size: 12px; color: var(--danger); margin-bottom: 10px; min-height: 16px; font-weight: 500;
+}
+.auth-toggle {
+  font-size: 12px; color: var(--muted); cursor: pointer; transition: color 0.2s;
+}
+.auth-toggle:hover { color: var(--text2); }
+.auth-toggle span { color: var(--accent); font-weight: 600; }
 
 .login-note {
   margin-top: 16px; font-size: 11px; color: var(--muted2);
@@ -292,7 +313,6 @@ header {
 
 .module-card:hover .mc-icon { border-color: var(--accent); }
 
-/* Owner cards get yellow accent on hover */
 .section-head.owner ~ .modules .module-card:hover .mc-icon {
   border-color: var(--yellow);
 }
@@ -322,37 +342,6 @@ header {
 .setting-card .si { font-size: 16px; flex-shrink: 0; }
 .setting-card .sl { flex: 1; }
 .setting-card .sv { font-size: 11px; color: var(--accent); font-weight: 500; }
-
-/* ══════ SHEET SETUP ══════ */
-.screen-title { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
-.screen-desc { color: var(--muted); font-size: 13px; line-height: 1.7; margin-bottom: 24px; }
-.screen-desc code { color: var(--accent); background: var(--surface2); padding: 2px 8px; border-radius: 6px; font-size: 12px; border: 1px solid var(--border); }
-
-.field-group { margin-bottom: 16px; }
-label { display: block; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; font-weight: 600; }
-
-input {
-  width: 100%; background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--r); color: var(--text); font-family: inherit;
-  font-size: 14px; padding: 12px 14px; outline: none;
-  transition: all 0.2s; -webkit-appearance: none;
-}
-input::placeholder { color: var(--muted2); }
-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow2); }
-
-.btn {
-  width: 100%; background: var(--accent); color: #fff; border: none;
-  border-radius: var(--r); font-family: inherit; font-size: 14px;
-  font-weight: 600; padding: 14px; cursor: pointer; margin-top: 8px;
-  transition: all 0.2s;
-}
-.btn:hover { background: var(--accent2); }
-.btn:active { transform: scale(0.98); }
-
-.btn-outline {
-  background: none; border: 1px solid var(--border); color: var(--muted);
-}
-.btn-outline:hover { border-color: var(--accent); color: var(--accent); }
 
 /* ══════ FOOTER ══════ */
 .hub-footer {
@@ -407,25 +396,14 @@ input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-gl
   <div class="login-badge">Система управления стройкой</div>
   <div class="login-title">Королевские<br><em>Бани</em></div>
   <div class="login-sub">Единый центр контроля строительства.<br>Все инструменты — в одном месте.</div>
-  <button class="google-btn" onclick="signIn()">
-    <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#fff" fill-opacity="0.9" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#fff" fill-opacity="0.7" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#fff" fill-opacity="0.5" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#fff" fill-opacity="0.6" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-    Войти через Google
-  </button>
-  <div class="login-note">Безопасный вход через аккаунт Google.<br>Данные хранятся в вашей таблице.</div>
-</div>
-
-<div id="sheet-setup">
-  <div class="screen-title">ID таблицы</div>
-  <div class="screen-desc">
-    Открой Google Таблицу → скопируй ID из URL:<br>
-    <code>spreadsheets/d/<b>ВОТ_ЭТО</b>/edit</code>
+  <div class="auth-form">
+    <div class="auth-error" id="authError"></div>
+    <input type="email" class="auth-input" id="authEmail" placeholder="Email" autocomplete="email">
+    <input type="password" class="auth-input" id="authPass" placeholder="Пароль" autocomplete="current-password">
+    <button class="auth-btn" id="authBtn" onclick="doAuth()">Войти</button>
+    <div class="auth-toggle" id="authToggle" onclick="toggleAuthMode()">Нет аккаунта? <span>Создать</span></div>
   </div>
-  <div class="field-group">
-    <label>Spreadsheet ID</label>
-    <input type="text" id="sheetIdInput" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms" autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="off">
-  </div>
-  <button class="btn" onclick="saveSheetId()">Сохранить и продолжить</button>
-  <button class="btn btn-outline" style="margin-top:10px" onclick="goBack()">← Назад</button>
+  <div class="login-note">Быстрый вход. Сессия сохраняется —<br>больше не нужно входить каждый раз.</div>
 </div>
 
 <div id="main-screen">
@@ -470,24 +448,29 @@ input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-gl
       <div class="sh-icon">⚙️</div>
       <div class="sh-text">Настройки</div>
     </div>
-    <div class="setting-card" onclick="showScreen('sheet-setup')">
+    <div class="setting-card" id="sheetSetting" style="display:none">
       <span class="si">📊</span>
       <span class="sl">ID таблицы Google Sheets</span>
       <span class="sv" id="sheetIdPreview">не указан</span>
     </div>
   </div>
 
-  <div class="hub-footer">КБ Контроль · v2.0</div>
+  <div class="hub-footer">КБ Контроль · v3.0</div>
 </div>
 
 <div id="toast"></div>
 
-<script src="https://accounts.google.com/gsi/client" async></script>
 <script>
 /* ══════════════════════════════════════
+   SUPABASE AUTH
+   Сессия сохраняется навсегда
+   ══════════════════════════════════════ */
+const SB_URL = 'https://vsmqzdyzjcczrogwptsq.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzbXF6ZHl6amNjenJvZ3dwdHNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0NDU3NDUsImV4cCI6MjA4ODAyMTc0NX0.qHqNNxQyzKrBbtarlLD3BKjykt9jbcW5h4UoZGF5TY8';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+/* ══════════════════════════════════════
    MODULE CONFIG
-   Добавить модуль = одна строка
-   role: 'owner' или 'manager'
    ══════════════════════════════════════ */
 const MODULES = [
   { id: 'control', title: 'Контроль',            desc: 'Главная панель · прогресс · категории',  icon: '🏗', url: 'https://stroy-control-six.vercel.app', role: 'owner' },
@@ -501,80 +484,94 @@ const MODULES = [
   { id: 'worthit', title: 'Стоит ли?', desc: 'Калькулятор покупок · таймер · список желаний', icon: '🍎', url: 'worthit.html', role: 'personal' },
 ];
 
+let authMode = 'login';
+
+/* ══════ INIT ══════ */
+updateTime();
+setInterval(updateTime, 60000);
+
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    onSignedIn(session.user);
+  } else {
+    showScreen('login');
+  }
+
+  sb.auth.onAuthStateChange((ev, session) => {
+    if (ev === 'SIGNED_IN' && session) onSignedIn(session.user);
+    if (ev === 'SIGNED_OUT') showScreen('login');
+  });
+})();
+
 /* ══════ AUTH ══════ */
-const CLIENT_ID = '747030737105-kpohc9g1rtfff9i8vels69r98r2akq3m.apps.googleusercontent.com';
-const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
-let accessToken = null;
-let tokenClient = null;
-
-window.onload = () => {
-  updateTime();
-  setInterval(updateTime, 60000);
-
-  const check = setInterval(() => {
-    if (window.google && google.accounts) {
-      clearInterval(check);
-      tokenClient = google.accounts.oauth2.initTokenClient({
-        client_id: CLIENT_ID, scope: SCOPES,
-        callback: (resp) => {
-          if (resp.error) { toast('Ошибка входа: ' + resp.error, 'error'); return; }
-          accessToken = resp.access_token;
-          localStorage.setItem('kb_auth_token', accessToken);
-          onSignedIn();
-        }
-      });
-      const saved = localStorage.getItem('kb_auth_token');
-      if (saved) { accessToken = saved; verifyToken(); }
-      else { showScreen('login'); }
-    }
-  }, 100);
-  setTimeout(() => { clearInterval(check); if (!accessToken) showScreen('login'); }, 6000);
-};
-
-function updateTime() {
-  const now = new Date();
-  const h = now.getHours();
-  const m = String(now.getMinutes()).padStart(2, '0');
-  const badge = document.getElementById('timeBadge');
-  if (badge) badge.textContent = `${h}:${m}`;
+function toggleAuthMode() {
+  authMode = authMode === 'login' ? 'signup' : 'login';
+  document.getElementById('authBtn').textContent = authMode === 'login' ? 'Войти' : 'Создать аккаунт';
+  document.getElementById('authToggle').innerHTML = authMode === 'login'
+    ? 'Нет аккаунта? <span>Создать</span>'
+    : 'Уже есть аккаунт? <span>Войти</span>';
+  document.getElementById('authError').textContent = '';
 }
 
-async function verifyToken() {
+async function doAuth() {
+  const email = document.getElementById('authEmail').value.trim();
+  const pass = document.getElementById('authPass').value;
+  const errEl = document.getElementById('authError');
+  const btn = document.getElementById('authBtn');
+  errEl.textContent = '';
+
+  if (!email || !pass) { errEl.textContent = 'Заполни email и пароль'; return; }
+  if (pass.length < 6) { errEl.textContent = 'Пароль минимум 6 символов'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Подожди...';
+
   try {
-    const r = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', { headers: { Authorization: 'Bearer ' + accessToken } });
-    if (r.ok) { onSignedIn(); }
-    else { localStorage.removeItem('kb_auth_token'); accessToken = null; showScreen('login'); }
-  } catch(e) { localStorage.removeItem('kb_auth_token'); accessToken = null; showScreen('login'); }
+    let res;
+    if (authMode === 'login') {
+      res = await sb.auth.signInWithPassword({ email, password: pass });
+    } else {
+      res = await sb.auth.signUp({ email, password: pass });
+    }
+    if (res.error) {
+      let msg = res.error.message;
+      if (msg.includes('Invalid login')) msg = 'Неверный email или пароль';
+      if (msg.includes('already registered')) msg = 'Этот email уже зарегистрирован';
+      errEl.textContent = msg;
+    } else if (authMode === 'signup' && res.data?.user && !res.data.session) {
+      errEl.style.color = 'var(--success)';
+      errEl.textContent = 'Проверь почту для подтверждения';
+    }
+  } catch(e) {
+    errEl.textContent = 'Ошибка подключения';
+  }
+
+  btn.disabled = false;
+  btn.textContent = authMode === 'login' ? 'Войти' : 'Создать аккаунт';
 }
 
-function signIn() { tokenClient.requestAccessToken({ prompt: '' }); }
-
-function signOut() {
-  if (accessToken) try { google.accounts.oauth2.revoke(accessToken, ()=>{}); } catch(e){}
-  accessToken = null;
-  localStorage.removeItem('kb_auth_token');
+async function signOut() {
+  await sb.auth.signOut();
   document.getElementById('userChip').style.display = 'none';
   document.getElementById('logoutBtn').style.display = 'none';
   showScreen('login');
 }
 
-async function onSignedIn() {
-  try {
-    const r = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', { headers: { Authorization: 'Bearer ' + accessToken } });
-    const u = await r.json();
-    document.getElementById('userChip').textContent = u.email || '';
-    document.getElementById('userChip').style.display = 'block';
-    document.getElementById('logoutBtn').style.display = 'block';
+function onSignedIn(user) {
+  const email = user.email || '';
+  document.getElementById('userChip').textContent = email;
+  document.getElementById('userChip').style.display = 'block';
+  document.getElementById('logoutBtn').style.display = 'block';
 
-    const hour = new Date().getHours();
-    let greeting = 'Добрый день';
-    if (hour < 6) greeting = 'Доброй ночи';
-    else if (hour < 12) greeting = 'Доброе утро';
-    else if (hour >= 18) greeting = 'Добрый вечер';
+  const hour = new Date().getHours();
+  let greeting = 'Добрый день';
+  if (hour < 6) greeting = 'Доброй ночи';
+  else if (hour < 12) greeting = 'Доброе утро';
+  else if (hour >= 18) greeting = 'Добрый вечер';
 
-    const name = u.given_name || '';
-    document.getElementById('welcomeText').textContent = name ? `${greeting}, ${name}` : greeting;
-  } catch(e){}
+  const name = email.split('@')[0];
+  document.getElementById('welcomeText').textContent = name ? `${greeting}, ${name}` : greeting;
 
   const sheetId = localStorage.getItem('kb_sheet_id') || '';
   if (sheetId) {
@@ -585,18 +582,6 @@ async function onSignedIn() {
   renderModules();
 }
 
-/* ══════ SHEET ID ══════ */
-function saveSheetId() {
-  const v = document.getElementById('sheetIdInput').value.trim();
-  if (!v) { toast('Вставь ID таблицы', 'error'); return; }
-  localStorage.setItem('kb_sheet_id', v);
-  document.getElementById('sheetIdPreview').textContent = v.slice(0, 14) + '…';
-  showScreen('main');
-  toast('ID таблицы сохранён ✓', 'success');
-}
-
-function goBack() { showScreen('main'); }
-
 /* ══════ RENDER MODULES ══════ */
 function renderModules() {
   const ownerMods    = MODULES.filter(m => m.role === 'owner');
@@ -604,7 +589,7 @@ function renderModules() {
   const personalMods = MODULES.filter(m => m.role === 'personal');
 
   const cardHtml = m => `
-    <a class="module-card" href="${m.url}" onclick="navigateModule(event,'${m.url}')">
+    <a class="module-card" href="${m.url}">
       <div class="mc-icon">${m.icon}</div>
       <div class="mc-info">
         <h3>${m.title}</h3>
@@ -617,23 +602,25 @@ function renderModules() {
   document.getElementById('personalModules').innerHTML = personalMods.map(cardHtml).join('');
 }
 
-function navigateModule(e, url) {
-  if (accessToken) localStorage.setItem('kb_auth_token', accessToken);
-}
-
 /* ══════ NAV ══════ */
 function showScreen(name) {
   document.getElementById('loading-screen').style.display = 'none';
   document.getElementById('login-screen').style.display = name === 'login' ? 'flex' : 'none';
-  document.getElementById('sheet-setup').style.display = name === 'sheet-setup' ? 'block' : 'none';
   document.getElementById('main-screen').style.display = name === 'main' ? 'block' : 'none';
-  if (name === 'sheet-setup') document.getElementById('sheetIdInput').value = localStorage.getItem('kb_sheet_id') || '';
-  const screens = { login:'login-screen', 'sheet-setup':'sheet-setup', main:'main-screen' };
+  const screens = { login: 'login-screen', main: 'main-screen' };
   const el = document.getElementById(screens[name]);
   if (el) { el.classList.remove('page-enter'); void el.offsetWidth; el.classList.add('page-enter'); }
 }
 
-function toast(msg, type='') {
+function updateTime() {
+  const now = new Date();
+  const h = now.getHours();
+  const m = String(now.getMinutes()).padStart(2, '0');
+  const badge = document.getElementById('timeBadge');
+  if (badge) badge.textContent = `${h}:${m}`;
+}
+
+function toast(msg, type = '') {
   const el = document.getElementById('toast');
   el.textContent = msg; el.className = `show ${type}`;
   setTimeout(() => el.className = '', 3200);
