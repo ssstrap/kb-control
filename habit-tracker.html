@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Трекер Димы</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 :root {
   --bg: #060608;
@@ -28,10 +29,9 @@ body {
   min-height: 100vh; overflow-x: hidden; padding-bottom: 60px;
 }
 
-/* AMBIENT */
 .ambient { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
 .orb { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.15; animation: orbFloat 14s ease-in-out infinite; }
-.orb-1 { width: 500px; height: 500px; background: #34aaff; top: -180px; left: -120px; animation-delay: 0s; }
+.orb-1 { width: 500px; height: 500px; background: #34aaff; top: -180px; left: -120px; }
 .orb-2 { width: 380px; height: 380px; background: #bf5af2; top: 250px; right: -130px; animation-delay: -5s; }
 .orb-3 { width: 280px; height: 280px; background: #ffd60a; bottom: 80px; left: 30px; animation-delay: -9s; opacity: 0.08; }
 @keyframes orbFloat {
@@ -41,31 +41,40 @@ body {
 }
 #particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
 
-/* LAYOUT */
 .container { position: relative; z-index: 1; max-width: 420px; margin: 0 auto; padding: 0 16px; }
 
-/* LOGIN SCREEN */
+/* LOGIN */
 .login-screen {
   position: fixed; inset: 0; z-index: 100;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   background: var(--bg); padding: 32px;
-  backdrop-filter: blur(20px);
 }
 .login-screen.hidden { display: none; }
 .login-logo { margin-bottom: 20px; opacity: 0.9; }
 .login-title { font-size: 28px; font-weight: 800; letter-spacing: -0.8px; text-align: center; margin-bottom: 8px; }
-.login-sub { font-size: 15px; color: var(--muted); text-align: center; margin-bottom: 40px; line-height: 1.5; }
-.login-btn {
-  display: flex; align-items: center; gap: 12px;
-  background: #fff; color: #1a1a1a;
-  border: none; border-radius: 16px; padding: 16px 28px;
-  font-size: 16px; font-weight: 600; font-family: 'Inter',sans-serif;
-  cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+.login-sub { font-size: 15px; color: var(--muted); text-align: center; margin-bottom: 32px; line-height: 1.5; }
+
+.auth-form { width: 100%; max-width: 320px; }
+.auth-input {
+  width: 100%; padding: 15px 18px; border: 1px solid var(--glass-border); border-radius: 16px;
+  background: var(--glass); color: var(--text); font-family: 'Inter',sans-serif;
+  font-size: 16px; outline: none; transition: all 0.3s; margin-bottom: 10px;
+  backdrop-filter: blur(20px);
 }
-.login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
-.login-btn:active { transform: scale(0.97); }
-.login-btn img { width: 22px; height: 22px; }
+.auth-input:focus { border-color: rgba(52,170,255,0.4); box-shadow: 0 0 0 3px rgba(52,170,255,0.12); }
+.auth-input::placeholder { color: var(--muted2); }
+.auth-btn {
+  width: 100%; background: #fff; color: #1a1a1a; border: none; border-radius: 16px;
+  padding: 16px 28px; font-size: 16px; font-weight: 600; font-family: 'Inter',sans-serif;
+  cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3); margin-bottom: 10px;
+}
+.auth-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+.auth-btn:active { transform: scale(0.97); }
+.auth-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.auth-error { font-size: 13px; color: var(--red); margin-bottom: 10px; min-height: 18px; text-align: center; }
+.auth-toggle { font-size: 13px; color: var(--muted); cursor: pointer; text-align: center; }
+.auth-toggle span { color: var(--water); font-weight: 600; }
 .login-note { margin-top: 20px; font-size: 12px; color: var(--muted2); text-align: center; }
 
 /* HEADER */
@@ -81,10 +90,8 @@ body {
   display: flex; align-items: center; gap: 8px;
   background: rgba(255,214,10,0.09); border: 1px solid rgba(255,214,10,0.22);
   border-radius: 100px; padding: 9px 15px;
-  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-  transition: transform 0.2s;
+  backdrop-filter: blur(24px);
 }
-.streak-pill:hover { transform: scale(1.05); }
 .streak-fire { font-size: 19px; }
 .streak-num { font-size: 22px; font-weight: 800; color: var(--gold); line-height: 1; letter-spacing: -0.5px; }
 .streak-lbl { font-size: 10px; color: rgba(255,214,10,0.5); font-weight: 500; margin-top: 1px; }
@@ -96,33 +103,28 @@ body {
 }
 .logout-btn:hover { border-color: rgba(255,69,58,0.4); color: var(--red); }
 
-/* SYNC STATUS */
+/* SYNC */
 .sync-bar {
   display: flex; align-items: center; gap: 8px;
   background: var(--glass); border: 1px solid var(--glass-border);
   border-radius: 12px; padding: 10px 14px; margin-bottom: 20px;
   font-size: 12px; color: var(--muted);
-  backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
-  transition: border-color 0.3s;
+  backdrop-filter: blur(40px); transition: border-color 0.3s;
 }
 .sync-bar.syncing { border-color: rgba(52,170,255,0.3); color: var(--water); }
-.sync-bar.ok      { border-color: rgba(48,209,88,0.3);  color: var(--green); }
-.sync-bar.error   { border-color: rgba(255,69,58,0.3);  color: var(--red); }
-.sync-dot {
-  width: 7px; height: 7px; border-radius: 50%; background: var(--muted2);
-  transition: background 0.3s;
-}
+.sync-bar.ok { border-color: rgba(48,209,88,0.3); color: var(--green); }
+.sync-bar.error { border-color: rgba(255,69,58,0.3); color: var(--red); }
+.sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted2); transition: background 0.3s; }
 .sync-bar.syncing .sync-dot { background: var(--water); animation: pulse 1s infinite; }
-.sync-bar.ok      .sync-dot { background: var(--green); }
-.sync-bar.error   .sync-dot { background: var(--red); }
+.sync-bar.ok .sync-dot { background: var(--green); }
+.sync-bar.error .sync-dot { background: var(--red); }
 @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
 
 /* DATE NAV */
 .date-nav {
   display: flex; align-items: center; gap: 10px; margin-bottom: 28px;
   background: var(--glass); border: 1px solid var(--glass-border);
-  border-radius: 18px; padding: 12px 14px;
-  backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+  border-radius: 18px; padding: 12px 14px; backdrop-filter: blur(40px);
 }
 .nav-btn {
   background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
@@ -134,7 +136,7 @@ body {
 .nav-btn:active { transform: scale(0.90); }
 .date-center { flex: 1; text-align: center; }
 .date-main-text { font-size: 15px; font-weight: 600; letter-spacing: -0.2px; }
-.date-sub-text  { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.date-sub-text { font-size: 12px; color: var(--muted); margin-top: 2px; }
 .today-btn {
   background: rgba(52,170,255,0.15) !important; border: 1px solid rgba(52,170,255,0.3) !important;
   color: var(--water) !important; font-size: 12px !important; font-weight: 600 !important;
@@ -142,7 +144,6 @@ body {
   width: auto !important; white-space: nowrap; font-family: 'Inter',sans-serif !important;
 }
 
-/* SECTION LABEL */
 .section-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted2); margin-bottom: 12px; padding-left: 2px; }
 
 /* HABIT CARDS */
@@ -152,9 +153,8 @@ body {
   border-radius: 22px; padding: 20px 18px; margin-bottom: 11px;
   display: flex; align-items: center; gap: 15px;
   cursor: pointer; user-select: none; overflow: hidden;
-  backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+  backdrop-filter: blur(40px);
   transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), border-color 0.3s, background 0.3s, box-shadow 0.3s;
-  -webkit-tap-highlight-color: transparent;
 }
 .habit-card:hover { transform: translateY(-2px); }
 .habit-card:active { transform: scale(0.98); }
@@ -171,15 +171,14 @@ body {
 .habit-card.cal::after    { background: radial-gradient(ellipse at 15% 50%, rgba(191,90,242,0.14), transparent 65%); }
 .habit-card.done::after   { opacity: 1; }
 .habit-card.done { background: rgba(255,255,255,0.055); }
-.habit-card.water.done  { border-color: rgba(52,170,255,0.28);  box-shadow: 0 4px 32px rgba(52,170,255,0.09), inset 0 1px 0 rgba(52,170,255,0.18); }
-.habit-card.pushup.done { border-color: rgba(255,107,53,0.28);  box-shadow: 0 4px 32px rgba(255,107,53,0.09), inset 0 1px 0 rgba(255,107,53,0.18); }
-.habit-card.cal.done    { border-color: rgba(191,90,242,0.28);  box-shadow: 0 4px 32px rgba(191,90,242,0.09), inset 0 1px 0 rgba(191,90,242,0.18); }
+.habit-card.water.done  { border-color: rgba(52,170,255,0.28); box-shadow: 0 4px 32px rgba(52,170,255,0.09), inset 0 1px 0 rgba(52,170,255,0.18); }
+.habit-card.pushup.done { border-color: rgba(255,107,53,0.28); box-shadow: 0 4px 32px rgba(255,107,53,0.09), inset 0 1px 0 rgba(255,107,53,0.18); }
+.habit-card.cal.done    { border-color: rgba(191,90,242,0.28); box-shadow: 0 4px 32px rgba(191,90,242,0.09), inset 0 1px 0 rgba(191,90,242,0.18); }
 .habit-card.locked { opacity: 0.32; cursor: not-allowed; transform: none !important; }
 .habit-icon-wrap {
   width: 50px; height: 50px; border-radius: 16px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 23px; flex-shrink: 0;
-  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  font-size: 23px; flex-shrink: 0; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
 }
 .habit-card.water  .habit-icon-wrap { background: rgba(52,170,255,0.13); }
 .habit-card.pushup .habit-icon-wrap { background: rgba(255,107,53,0.13); }
@@ -203,8 +202,7 @@ body {
 .today-score {
   background: var(--glass); border: 1px solid var(--glass-border);
   border-radius: 22px; padding: 22px; margin-bottom: 24px;
-  display: flex; align-items: center; gap: 20px;
-  backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+  display: flex; align-items: center; gap: 20px; backdrop-filter: blur(40px);
   position: relative; overflow: hidden;
 }
 .today-score::before {
@@ -236,8 +234,7 @@ body {
 /* PROGRESS */
 .progress-card {
   background: var(--glass); border: 1px solid var(--glass-border);
-  border-radius: 22px; padding: 22px 20px; margin-bottom: 24px;
-  backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+  border-radius: 22px; padding: 22px 20px; margin-bottom: 24px; backdrop-filter: blur(40px);
   position: relative; overflow: hidden;
 }
 .progress-card::before {
@@ -245,17 +242,14 @@ body {
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent);
 }
 .progress-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
-.progress-title { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; letter-spacing: -0.2px; }
+.progress-title { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
 .progress-pts-num {
   font-size: 26px; font-weight: 800; letter-spacing: -1px; line-height: 1;
   background: linear-gradient(135deg, #ffd60a, #ff9f0a);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
 .progress-pts-goal { font-size: 12px; color: var(--muted); margin-top: 3px; text-align: right; }
-.bar-track {
-  height: 6px; background: rgba(255,255,255,0.07);
-  border-radius: 100px; position: relative; overflow: visible; margin-bottom: 10px;
-}
+.bar-track { height: 6px; background: rgba(255,255,255,0.07); border-radius: 100px; position: relative; overflow: visible; margin-bottom: 10px; }
 .bar-fill {
   height: 100%; border-radius: 100px;
   background: linear-gradient(90deg, #34aaff 0%, #bf5af2 50%, #ffd60a 100%);
@@ -267,10 +261,7 @@ body {
   width: 12px; height: 12px; border-radius: 50%;
   background: #ffd60a; box-shadow: 0 0 12px #ffd60a, 0 0 24px rgba(255,214,10,0.4);
 }
-.bar-marker {
-  position: absolute; top: 50%; transform: translate(-50%,-50%);
-  width: 2px; height: 14px; border-radius: 2px; pointer-events: none;
-}
+.bar-marker { position: absolute; top: 50%; transform: translate(-50%,-50%); width: 2px; height: 14px; border-radius: 2px; pointer-events: none; }
 .bar-marker-gold { background: rgba(255,214,10,0.65); }
 .bar-marker-tg   { background: rgba(42,171,238,0.65); }
 .bar-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted2); }
@@ -282,10 +273,10 @@ body {
   animation: bannerIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
 }
 .reward-banner.visible { display: flex; }
-.reward-banner-mid  { background: rgba(42,171,238,0.09);  border: 1px solid rgba(42,171,238,0.22); }
-.reward-banner-main { background: rgba(255,214,10,0.09);  border: 1px solid rgba(255,214,10,0.25); }
+.reward-banner-mid  { background: rgba(42,171,238,0.09); border: 1px solid rgba(42,171,238,0.22); }
+.reward-banner-main { background: rgba(255,214,10,0.09); border: 1px solid rgba(255,214,10,0.25); }
 .reward-emoji { font-size: 30px; flex-shrink: 0; }
-.reward-title { font-size: 14px; font-weight: 600; letter-spacing: -0.2px; }
+.reward-title { font-size: 14px; font-weight: 600; }
 .reward-sub   { font-size: 12px; color: var(--muted); margin-top: 3px; }
 @keyframes bannerIn { from{opacity:0;transform:translateY(10px) scale(0.96);} to{opacity:1;transform:translateY(0) scale(1);} }
 
@@ -293,11 +284,10 @@ body {
 .stats-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 24px; }
 .stat-box {
   background: var(--glass); border: 1px solid var(--glass-border);
-  border-radius: 18px; padding: 16px 12px; text-align: center;
-  backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
-  transition: transform 0.2s, border-color 0.2s;
+  border-radius: 18px; padding: 16px 12px; text-align: center; backdrop-filter: blur(40px);
+  transition: transform 0.2s;
 }
-.stat-box:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.14); }
+.stat-box:hover { transform: translateY(-2px); }
 .stat-num {
   font-size: 28px; font-weight: 800; letter-spacing: -1px; line-height: 1;
   background: linear-gradient(135deg, #fff, rgba(255,255,255,0.55));
@@ -305,11 +295,10 @@ body {
 }
 .stat-lbl { font-size: 10px; font-weight: 600; color: var(--muted2); text-transform: uppercase; letter-spacing: 0.8px; margin-top: 5px; }
 
-/* WEEK GRID */
+/* WEEK */
 .week-card {
   background: var(--glass); border: 1px solid var(--glass-border);
-  border-radius: 22px; padding: 20px 18px; margin-bottom: 28px;
-  backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+  border-radius: 22px; padding: 20px 18px; margin-bottom: 28px; backdrop-filter: blur(40px);
 }
 .week-row { display: flex; gap: 6px; margin-top: 14px; }
 .week-day {
@@ -320,7 +309,7 @@ body {
 }
 .week-day:hover { transform: translateY(-2px); background: rgba(255,255,255,0.06); }
 .week-day:active { transform: scale(0.93); }
-.wd-name { font-size: 9px; font-weight: 600; color: var(--muted2); text-transform: uppercase; letter-spacing: 0.5px; }
+.wd-name { font-size: 9px; font-weight: 600; color: var(--muted2); text-transform: uppercase; }
 .wd-pts  { font-size: 15px; font-weight: 700; color: rgba(255,255,255,0.2); }
 .week-day.perfect { background: rgba(255,214,10,0.07); border-color: rgba(255,214,10,0.22); }
 .week-day.perfect .wd-pts { color: var(--gold); }
@@ -329,16 +318,14 @@ body {
 .week-day.is-today { border-color: rgba(255,255,255,0.22) !important; background: rgba(255,255,255,0.07) !important; }
 .week-day.is-today .wd-name { color: rgba(255,255,255,0.6); }
 
-/* FOOTER */
 .footer { text-align: center; padding-top: 4px; }
 .reset-btn {
   background: transparent; border: 1px solid rgba(255,255,255,0.07); color: var(--muted2);
   border-radius: 12px; padding: 10px 20px; font-size: 12px; font-family: 'Inter',sans-serif;
-  cursor: pointer; letter-spacing: 0.4px; transition: border-color 0.2s, color 0.2s;
+  cursor: pointer; transition: border-color 0.2s, color 0.2s;
 }
 .reset-btn:hover { border-color: rgba(255,69,58,0.4); color: var(--red); }
 
-/* BURST */
 .burst-particle {
   position: fixed; pointer-events: none; border-radius: 50%; z-index: 9999;
   animation: burst 0.7s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
@@ -348,20 +335,16 @@ body {
 .check-popping { animation: checkPop 0.38s cubic-bezier(0.34,1.56,0.64,1); }
 @keyframes cardBounce { 0%{transform:scale(1) translateY(0);} 45%{transform:scale(1.025) translateY(-4px);} 100%{transform:scale(1) translateY(0);} }
 .card-bouncing { animation: cardBounce 0.42s cubic-bezier(0.34,1.56,0.64,1); }
-@keyframes fadeUp { from{transform:translateY(6px);opacity:0;} to{transform:translateY(0);opacity:1;} }
-.score-changed { animation: fadeUp 0.28s ease; }
+@keyframes fadeUp2 { from{transform:translateY(6px);opacity:0;} to{transform:translateY(0);opacity:1;} }
+.score-changed { animation: fadeUp2 0.28s ease; }
 </style>
 </head>
 <body>
 
 <canvas id="particles"></canvas>
-<div class="ambient">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
-</div>
+<div class="ambient"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
 
-<!-- LOGIN SCREEN -->
+<!-- LOGIN -->
 <div class="login-screen" id="loginScreen">
   <div class="login-logo">
     <svg width="56" height="68" viewBox="0 0 814 1000" xmlns="http://www.w3.org/2000/svg">
@@ -369,81 +352,48 @@ body {
     </svg>
   </div>
   <div class="login-title">Трекер привычек</div>
-  <div class="login-sub">Войди через Google чтобы начать</div>
-  <button class="login-btn" onclick="signIn()">
-    <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
-    Войти через Google
-  </button>
-  <div class="login-note">Данные сохраняются в твою Google Таблицу</div>
+  <div class="login-sub">Войди чтобы начать</div>
+  <div class="auth-form">
+    <div class="auth-error" id="authError"></div>
+    <input type="email" class="auth-input" id="authEmail" placeholder="Email" autocomplete="email">
+    <input type="password" class="auth-input" id="authPass" placeholder="Пароль" autocomplete="current-password">
+    <button class="auth-btn" id="authBtn" onclick="doAuth()">Войти</button>
+    <div class="auth-toggle" id="authToggle" onclick="toggleAuthMode()">Нет аккаунта? <span>Создать</span></div>
+  </div>
+  <div class="login-note">Сессия сохраняется. Входить нужно только один раз.</div>
 </div>
 
 <!-- MAIN APP -->
 <div class="container" id="mainApp" style="display:none">
-
   <div class="header">
     <div>
       <div class="header-greeting">Привет,</div>
       <div class="header-name" id="userName">Дима 👋</div>
     </div>
     <div class="header-right">
-      <div class="streak-pill">
-        <span class="streak-fire">🔥</span>
-        <div>
-          <div class="streak-num" id="streakNum">0</div>
-          <div class="streak-lbl">стрик</div>
-        </div>
-      </div>
-      <button class="logout-btn" onclick="signOut()">Выйти</button>
+      <div class="streak-pill"><span class="streak-fire">🔥</span><div><div class="streak-num" id="streakNum">0</div><div class="streak-lbl">стрик</div></div></div>
+      <button class="logout-btn" onclick="doSignOut()">Выйти</button>
     </div>
   </div>
 
-  <div class="sync-bar" id="syncBar">
-    <div class="sync-dot"></div>
-    <span id="syncText">Загрузка данных...</span>
-  </div>
+  <div class="sync-bar" id="syncBar"><div class="sync-dot"></div><span id="syncText">Загрузка...</span></div>
 
   <div class="date-nav">
     <button class="nav-btn" onclick="changeDay(-1)">‹</button>
-    <div class="date-center">
-      <div class="date-main-text" id="dateMain"></div>
-      <div class="date-sub-text"  id="dateSub"></div>
-    </div>
+    <div class="date-center"><div class="date-main-text" id="dateMain"></div><div class="date-sub-text" id="dateSub"></div></div>
     <button class="today-btn nav-btn" onclick="goToday()">Сегодня</button>
     <button class="nav-btn" onclick="changeDay(1)">›</button>
   </div>
 
   <div class="habits-section">
     <div class="section-label">Сегодня</div>
-    <div class="habit-card water" id="card-water" onclick="toggle('water')">
-      <div class="habit-icon-wrap">💧</div>
-      <div class="habit-info">
-        <div class="habit-name">Вода</div>
-        <div class="habit-desc">1.5 литра за день</div>
-      </div>
-      <div class="habit-check" id="check-water"><span id="chk-water"></span></div>
-    </div>
-    <div class="habit-card pushup" id="card-pushup" onclick="toggle('pushup')">
-      <div class="habit-icon-wrap">💪</div>
-      <div class="habit-info">
-        <div class="habit-name">Отжимания</div>
-        <div class="habit-desc" id="pushup-desc">3 подхода утром</div>
-      </div>
-      <div class="habit-check" id="check-pushup"><span id="chk-pushup"></span></div>
-    </div>
-    <div class="habit-card cal" id="card-cal" onclick="toggle('cal')">
-      <div class="habit-icon-wrap">🥗</div>
-      <div class="habit-info">
-        <div class="habit-name">Калории</div>
-        <div class="habit-desc" id="cal-desc">Активируется в понедельник</div>
-      </div>
-      <div class="habit-check" id="check-cal"><span id="chk-cal"></span></div>
-    </div>
+    <div class="habit-card water" id="card-water" onclick="toggle('water')"><div class="habit-icon-wrap">💧</div><div class="habit-info"><div class="habit-name">Вода</div><div class="habit-desc">1.5 литра за день</div></div><div class="habit-check" id="check-water"><span id="chk-water"></span></div></div>
+    <div class="habit-card pushup" id="card-pushup" onclick="toggle('pushup')"><div class="habit-icon-wrap">💪</div><div class="habit-info"><div class="habit-name">Отжимания</div><div class="habit-desc" id="pushup-desc">3 подхода утром</div></div><div class="habit-check" id="check-pushup"><span id="chk-pushup"></span></div></div>
+    <div class="habit-card cal" id="card-cal" onclick="toggle('cal')"><div class="habit-icon-wrap">🥗</div><div class="habit-info"><div class="habit-name">Калории</div><div class="habit-desc" id="cal-desc">Держать 1800–2000 ккал</div></div><div class="habit-check" id="check-cal"><span id="chk-cal"></span></div></div>
   </div>
 
   <div class="today-score">
-    <div>
-      <div class="today-pts" id="todayPts">0<span class="today-max" id="todayMax"> / 20</span></div>
-    </div>
+    <div><div class="today-pts" id="todayPts">0<span class="today-max"> / 20</span></div></div>
     <div class="today-right">
       <div class="today-lbl">Баллов сегодня</div>
       <div class="habit-dots">
@@ -455,30 +405,11 @@ body {
   </div>
 
   <div class="progress-card">
-    <div class="progress-header">
-      <div class="progress-title">🎧 AirPods 4</div>
-      <div>
-        <div class="progress-pts-num" id="totalPts">0</div>
-        <div class="progress-pts-goal">из 1260 баллов</div>
-      </div>
-    </div>
-    <div class="bar-track">
-      <div class="bar-fill" id="barFill" style="width:0%"></div>
-      <div class="bar-marker bar-marker-tg"   style="left:50%"></div>
-      <div class="bar-marker bar-marker-gold" style="left:71.4%"></div>
-    </div>
-    <div class="bar-labels">
-      <span>0</span><span class="bar-lbl-tg">630 ✈️</span>
-      <span class="bar-lbl-gold">900 🎯</span><span>1260</span>
-    </div>
-    <div class="reward-banner reward-banner-mid" id="midRewardBanner">
-      <span class="reward-emoji">✈️</span>
-      <div><div class="reward-title">Telegram Premium заслужен</div><div class="reward-sub">Ты на полпути — не останавливайся</div></div>
-    </div>
-    <div class="reward-banner reward-banner-main" id="rewardBanner">
-      <span class="reward-emoji">🎧</span>
-      <div><div class="reward-title">AirPods 4 заслужены</div><div class="reward-sub">65 000 ₸ без единого грамма вины</div></div>
-    </div>
+    <div class="progress-header"><div class="progress-title">🎧 AirPods 4</div><div><div class="progress-pts-num" id="totalPts">0</div><div class="progress-pts-goal">из 1260 баллов</div></div></div>
+    <div class="bar-track"><div class="bar-fill" id="barFill" style="width:0%"></div><div class="bar-marker bar-marker-tg" style="left:50%"></div><div class="bar-marker bar-marker-gold" style="left:71.4%"></div></div>
+    <div class="bar-labels"><span>0</span><span class="bar-lbl-tg">630 ✈️</span><span class="bar-lbl-gold">900 🎯</span><span>1260</span></div>
+    <div class="reward-banner reward-banner-mid" id="midRewardBanner"><span class="reward-emoji">✈️</span><div><div class="reward-title">Telegram Premium заслужен</div><div class="reward-sub">Ты на полпути</div></div></div>
+    <div class="reward-banner reward-banner-main" id="rewardBanner"><span class="reward-emoji">🎧</span><div><div class="reward-title">AirPods 4 заслужены</div><div class="reward-sub">65 000 ₸ без единого грамма вины</div></div></div>
   </div>
 
   <div class="stats-row">
@@ -487,317 +418,197 @@ body {
     <div class="stat-box"><div class="stat-num" id="statPct">0%</div><div class="stat-lbl">К цели</div></div>
   </div>
 
-  <div class="week-card">
-    <div class="section-label">Эта неделя</div>
-    <div class="week-row" id="weekRow"></div>
-  </div>
-
-  <div class="footer">
-    <button class="reset-btn" onclick="confirmReset()">Сбросить прогресс</button>
-  </div>
+  <div class="week-card"><div class="section-label">Эта неделя</div><div class="week-row" id="weekRow"></div></div>
+  <div class="footer"><button class="reset-btn" onclick="confirmReset()">Сбросить прогресс</button></div>
 </div>
 
-<!-- Google Identity Services -->
-<script src="https://accounts.google.com/gsi/client" async></script>
-
 <script>
-// ===================== CONFIG =====================
-const CLIENT_ID    = '747030737105-kpohc9g1rtfff9i8vels69r98r2akq3m.apps.googleusercontent.com';
-const SHEET_ID     = '1qJar9BWiPCGrKJcNWW21WyXRb0bMX7PQz7QdRMqhm_s';
-const SHEET_NAME   = 'Привычки';
-const SCOPES       = 'https://www.googleapis.com/auth/spreadsheets';
+// ===================== SUPABASE =====================
+const SB_URL='https://vsmqzdyzjcczrogwptsq.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzbXF6ZHl6amNjenJvZ3dwdHNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0NDU3NDUsImV4cCI6MjA4ODAyMTc0NX0.qHqNNxQyzKrBbtarlLD3BKjykt9jbcW5h4UoZGF5TY8';
+const sb=supabase.createClient(SB_URL,SB_KEY);
 
-const GOAL_PTS = 1260, THRESHOLD = 900, MID_THRESHOLD = 630, PTS_PER = 10;
+const GOAL_PTS=1260, THRESHOLD=900, MID_THRESHOLD=630, PTS_PER=10;
+let userId=null, authMode='login';
+
+function getCalUnlockDate(){const d=new Date(),day=d.getDay();if(day===1)return toKey(d);const n=new Date(d);n.setDate(d.getDate()+(day===0?1:8-day));return toKey(n);}
+const CAL_UNLOCK=getCalUnlockDate();
+let currentKey=toKey(new Date());
+let habitsCache={}; // {dayKey: {water,pushup,cal}}
 
 // ===================== AUTH =====================
-let accessToken = null;
-
-function getCalUnlockDate() {
-  const d = new Date(), day = d.getDay();
-  if (day === 1) return toKey(d);
-  const next = new Date(d);
-  next.setDate(d.getDate() + (day === 0 ? 1 : 8 - day));
-  return toKey(next);
+function toggleAuthMode(){
+  authMode=authMode==='login'?'signup':'login';
+  document.getElementById('authBtn').textContent=authMode==='login'?'Войти':'Создать аккаунт';
+  document.getElementById('authToggle').innerHTML=authMode==='login'?'Нет аккаунта? <span>Создать</span>':'Уже есть аккаунт? <span>Войти</span>';
+  document.getElementById('authError').textContent='';
 }
-const CAL_UNLOCK = getCalUnlockDate();
-let currentKey = toKey(new Date());
 
-// Try silent restore on load
-window.addEventListener('load', () => {
-  const saved = localStorage.getItem('hb_token');
-  const exp   = parseInt(localStorage.getItem('hb_token_exp') || '0');
-  if (saved && Date.now() < exp) {
-    accessToken = saved;
-    showApp();
-  }
-  // Always init GIS after load
-  setTimeout(initGIS, 800);
-});
-
-let tokenClient;
-function initGIS() {
-  if (!window.google) { setTimeout(initGIS, 500); return; }
-  tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: CLIENT_ID,
-    scope: SCOPES,
-    callback: (resp) => {
-      if (resp.error) { setSyncStatus('error', 'Ошибка входа'); return; }
-      accessToken = resp.access_token;
-      // Expires in ~3600s
-      localStorage.setItem('hb_token', accessToken);
-      localStorage.setItem('hb_token_exp', Date.now() + 3500 * 1000);
-      showApp();
+async function doAuth(){
+  const email=document.getElementById('authEmail').value.trim();
+  const pass=document.getElementById('authPass').value;
+  const err=document.getElementById('authError');
+  const btn=document.getElementById('authBtn');
+  err.textContent='';
+  if(!email||!pass){err.textContent='Заполни email и пароль';return;}
+  if(pass.length<6){err.textContent='Пароль минимум 6 символов';return;}
+  btn.disabled=true;btn.textContent='Подожди...';
+  try{
+    let res;
+    if(authMode==='login')res=await sb.auth.signInWithPassword({email,password:pass});
+    else res=await sb.auth.signUp({email,password:pass});
+    if(res.error){
+      let msg=res.error.message;
+      if(msg.includes('Invalid login'))msg='Неверный email или пароль';
+      if(msg.includes('already registered'))msg='Email уже зарегистрирован';
+      err.textContent=msg;
+    }else if(authMode==='signup'&&res.data?.user&&!res.data.session){
+      err.style.color='var(--green)';err.textContent='Проверь почту для подтверждения';
     }
+  }catch(e){err.textContent='Ошибка подключения';}
+  btn.disabled=false;btn.textContent=authMode==='login'?'Войти':'Создать аккаунт';
+}
+
+async function doSignOut(){await sb.auth.signOut();document.getElementById('loginScreen').classList.remove('hidden');document.getElementById('mainApp').style.display='none';}
+
+// ===================== INIT =====================
+(async()=>{
+  const{data:{session}}=await sb.auth.getSession();
+  if(session){userId=session.user.id;showApp();}
+  sb.auth.onAuthStateChange((ev,session)=>{
+    if(ev==='SIGNED_IN'&&session){userId=session.user.id;showApp();}
+    if(ev==='SIGNED_OUT'){userId=null;document.getElementById('loginScreen').classList.remove('hidden');document.getElementById('mainApp').style.display='none';}
   });
-}
+})();
 
-function signIn() {
-  if (!tokenClient) { setTimeout(signIn, 500); return; }
-  tokenClient.requestAccessToken({ prompt: 'consent' });
-}
-
-function signOut() {
-  if (accessToken) google.accounts.oauth2.revoke(accessToken);
-  accessToken = null;
-  localStorage.removeItem('hb_token');
-  localStorage.removeItem('hb_token_exp');
-  document.getElementById('loginScreen').classList.remove('hidden');
-  document.getElementById('mainApp').style.display = 'none';
-}
-
-function showApp() {
+async function showApp(){
   document.getElementById('loginScreen').classList.add('hidden');
-  document.getElementById('mainApp').style.display = 'block';
+  document.getElementById('mainApp').style.display='block';
   initParticles();
-  loadFromSheets();
+  await migrateLocalData();
+  await loadFromSupabase();
 }
+
+// Migrate localStorage data to Supabase (one time)
+async function migrateLocalData(){
+  if(localStorage.getItem('hb_migrated_sb'))return;
+  const raw=localStorage.getItem('hb_data');
+  if(!raw)return;
+  try{
+    const data=JSON.parse(raw);
+    const rows=[];
+    for(const key in data){
+      const r=data[key];
+      const pts=getDayPoints(r,key);
+      rows.push({user_id:userId,day_key:key,water:!!r.water,pushup:!!r.pushup,cal:!!r.cal,points:pts});
+    }
+    if(rows.length){
+      await sb.from('habits').upsert(rows,{onConflict:'user_id,day_key'});
+    }
+    localStorage.setItem('hb_migrated_sb','1');
+    setSyncStatus('ok','Данные перенесены');
+  }catch(e){}
+}
+
+// ===================== SUPABASE DATA =====================
+async function loadFromSupabase(){
+  setSyncStatus('syncing','Загрузка...');
+  try{
+    const{data,error}=await sb.from('habits').select('*').eq('user_id',userId);
+    if(error)throw error;
+    habitsCache={};
+    if(data)data.forEach(r=>{habitsCache[r.day_key]={water:r.water,pushup:r.pushup,cal:r.cal};});
+    setSyncStatus('ok','Загружено');
+    render();
+  }catch(e){setSyncStatus('error','Ошибка загрузки');render();}
+}
+
+async function saveDayToSupabase(key){
+  const rec=habitsCache[key]||{water:false,pushup:false,cal:false};
+  const pts=getDayPoints(rec,key);
+  setSyncStatus('syncing','Сохранение...');
+  try{
+    await sb.from('habits').upsert({user_id:userId,day_key:key,water:rec.water,pushup:rec.pushup,cal:rec.cal,points:pts,updated_at:new Date().toISOString()},{onConflict:'user_id,day_key'});
+    setSyncStatus('ok','Сохранено ✓');
+    setTimeout(()=>setSyncStatus('','Синхронизировано'),2000);
+  }catch(e){setSyncStatus('error','Ошибка сохранения');}
+}
+
+function setSyncStatus(state,text){
+  const bar=document.getElementById('syncBar');
+  bar.className='sync-bar '+(state||'');
+  document.getElementById('syncText').textContent=text;
+}
+
+// ===================== LOCAL CACHE =====================
+function getData(){return habitsCache;}
+function getDayRecord(k){return habitsCache[k]||{water:false,pushup:false,cal:false};}
 
 // ===================== DATE =====================
-function toKey(d) {
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-}
-function keyToDate(k) { const [y,m,d]=k.split('-').map(Number); return new Date(y,m-1,d); }
-function formatDate(k) {
+function toKey(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function keyToDate(k){const[y,m,d]=k.split('-').map(Number);return new Date(y,m-1,d);}
+function formatDate(k){
   const d=keyToDate(k);
   const days=['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
   const months=['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
-  return { main:`${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`, sub:days[d.getDay()] };
+  return{main:`${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`,sub:days[d.getDay()]};
 }
-function changeDay(dir) { const d=keyToDate(currentKey); d.setDate(d.getDate()+dir); currentKey=toKey(d); render(); }
-function goToday() { currentKey=toKey(new Date()); render(); }
-
-// ===================== LOCAL STORAGE (cache) =====================
-function getData()         { return JSON.parse(localStorage.getItem('hb_data')||'{}'); }
-function saveDataLocal(d)  { localStorage.setItem('hb_data', JSON.stringify(d)); }
-function getDayRecord(k)   { return getData()[k] || {water:false, pushup:false, cal:false}; }
-
-// ===================== SHEETS API =====================
-const API = 'https://sheets.googleapis.com/v4/spreadsheets';
-
-function setSyncStatus(state, text) {
-  const bar = document.getElementById('syncBar');
-  bar.className = 'sync-bar ' + state;
-  document.getElementById('syncText').textContent = text;
-}
-
-// Load all rows from sheet into local cache
-async function loadFromSheets() {
-  if (!accessToken) return;
-  setSyncStatus('syncing', 'Загрузка из таблицы...');
-  try {
-    const range = encodeURIComponent(`${SHEET_NAME}!A2:F`);
-    const res = await fetch(`${API}/${SHEET_ID}/values/${range}`, {
-      headers: { Authorization: `Bearer ${accessToken}` }
-    });
-    if (res.status === 401) { refreshToken(); return; }
-    const json = await res.json();
-    const rows = json.values || [];
-    const data = {};
-    rows.forEach(row => {
-      const key = row[0];
-      if (!key) return;
-      data[key] = {
-        water:  row[1] === 'TRUE',
-        pushup: row[2] === 'TRUE',
-        cal:    row[3] === 'TRUE'
-      };
-    });
-    saveDataLocal(data);
-    setSyncStatus('ok', 'Данные загружены');
-    render();
-  } catch(e) {
-    setSyncStatus('error', 'Ошибка загрузки');
-    render();
-  }
-}
-
-// Write single day row to sheet (upsert by date)
-async function syncDayToSheets(key) {
-  if (!accessToken) return;
-  setSyncStatus('syncing', 'Сохранение...');
-  try {
-    const rec = getDayRecord(key);
-    const pts = getDayPoints(rec, key);
-    const values = [[
-      key,
-      rec.water  ? 'TRUE' : 'FALSE',
-      rec.pushup ? 'TRUE' : 'FALSE',
-      rec.cal    ? 'TRUE' : 'FALSE',
-      pts,
-      new Date().toLocaleString('ru-RU')
-    ]];
-
-    // Find existing row for this date
-    const rowNum = await findRowByDate(key);
-
-    if (rowNum) {
-      // Update existing row
-      const range = encodeURIComponent(`${SHEET_NAME}!A${rowNum}:F${rowNum}`);
-      await fetch(`${API}/${SHEET_ID}/values/${range}?valueInputOption=RAW`, {
-        method: 'PUT',
-        headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ values })
-      });
-    } else {
-      // Append new row
-      const range = encodeURIComponent(`${SHEET_NAME}!A:F`);
-      await fetch(`${API}/${SHEET_ID}/values/${range}:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ values })
-      });
-    }
-
-    setSyncStatus('ok', 'Сохранено ✓');
-    setTimeout(() => setSyncStatus('', 'Синхронизировано'), 2000);
-  } catch(e) {
-    setSyncStatus('error', 'Ошибка сохранения');
-  }
-}
-
-// Returns sheet row number (1-based) for a date key, or null
-async function findRowByDate(key) {
-  const range = encodeURIComponent(`${SHEET_NAME}!A:A`);
-  const res = await fetch(`${API}/${SHEET_ID}/values/${range}`, {
-    headers: { Authorization: `Bearer ${accessToken}` }
-  });
-  const json = await res.json();
-  const rows = json.values || [];
-  for (let i = 0; i < rows.length; i++) {
-    if (rows[i][0] === key) return i + 1;
-  }
-  return null;
-}
-
-// Ensure header row exists
-async function ensureHeader() {
-  const range = encodeURIComponent(`${SHEET_NAME}!A1:F1`);
-  const res = await fetch(`${API}/${SHEET_ID}/values/${range}`, {
-    headers: { Authorization: `Bearer ${accessToken}` }
-  });
-  const json = await res.json();
-  if (!json.values || !json.values[0] || json.values[0][0] !== 'Дата') {
-    await fetch(`${API}/${SHEET_ID}/values/${range}?valueInputOption=RAW`, {
-      method: 'PUT',
-      headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ values: [['Дата','Вода','Отжимания','Калории','Баллы','Обновлено']] })
-    });
-  }
-}
-
-function refreshToken() {
-  setSyncStatus('error', 'Сессия истекла, войди снова');
-  accessToken = null;
-  localStorage.removeItem('hb_token');
-  localStorage.removeItem('hb_token_exp');
-  setTimeout(() => {
-    if (tokenClient) tokenClient.requestAccessToken({ prompt: '' });
-  }, 1000);
-}
+function changeDay(dir){const d=keyToDate(currentKey);d.setDate(d.getDate()+dir);currentKey=toKey(d);render();}
+function goToday(){currentKey=toKey(new Date());render();}
 
 // ===================== TOGGLE =====================
-async function toggle(habit) {
-  if (habit==='cal' && currentKey<CAL_UNLOCK) return;
-  if (habit==='pushup' && ![1,3,5].includes(keyToDate(currentKey).getDay())) return;
-  if (currentKey>toKey(new Date())) return;
+async function toggle(habit){
+  if(habit==='cal'&&currentKey<CAL_UNLOCK)return;
+  if(habit==='pushup'&&![1,3,5].includes(keyToDate(currentKey).getDay()))return;
+  if(currentKey>toKey(new Date()))return;
 
-  const data = getData();
-  const rec  = data[currentKey] || {water:false, pushup:false, cal:false};
-  const wasOn = rec[habit];
-  rec[habit] = !wasOn;
-  data[currentKey] = rec;
-  saveDataLocal(data);
+  const rec=habitsCache[currentKey]||{water:false,pushup:false,cal:false};
+  const wasOn=rec[habit];
+  rec[habit]=!wasOn;
+  habitsCache[currentKey]=rec;
 
-  if (!wasOn) spawnBurst(habit);
-  const card = document.getElementById('card-'+habit);
+  if(!wasOn)spawnBurst(habit);
+  const card=document.getElementById('card-'+habit);
   card.classList.add('card-bouncing');
-  setTimeout(()=>card.classList.remove('card-bouncing'), 420);
-
+  setTimeout(()=>card.classList.remove('card-bouncing'),420);
   render();
-
-  // Ensure header once, then sync
-  await ensureHeader();
-  await syncDayToSheets(currentKey);
+  await saveDayToSupabase(currentKey);
 }
 
 // ===================== BURST =====================
-function spawnBurst(habit) {
+function spawnBurst(habit){
   const el=document.getElementById('check-'+habit);
   const rect=el.getBoundingClientRect();
-  const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
+  const cx=rect.left+rect.width/2,cy=rect.top+rect.height/2;
   const colors={water:'#34aaff',pushup:'#ff6b35',cal:'#bf5af2'};
   const color=colors[habit];
   for(let i=0;i<16;i++){
-    const p=document.createElement('div'); p.className='burst-particle';
-    const angle=(i/16)*360, dist=38+Math.random()*55, rad=angle*Math.PI/180, size=3+Math.random()*5;
+    const p=document.createElement('div');p.className='burst-particle';
+    const angle=(i/16)*360,dist=38+Math.random()*55,rad=angle*Math.PI/180,size=3+Math.random()*5;
     p.style.cssText=`left:${cx}px;top:${cy}px;width:${size}px;height:${size}px;background:${color};box-shadow:0 0 6px ${color};--tx:${Math.cos(rad)*dist}px;--ty:${Math.sin(rad)*dist}px;animation-duration:${0.5+Math.random()*0.3}s;`;
     document.body.appendChild(p);
-    setTimeout(()=>p.remove(), 900);
+    setTimeout(()=>p.remove(),900);
   }
 }
 
 // ===================== CALC =====================
-function getDayPoints(rec, key) {
+function getDayPoints(rec,key){
   let pts=0;
-  if(rec&&rec.water) pts+=PTS_PER;
-  if(rec&&rec.pushup&&[1,3,5].includes(keyToDate(key).getDay())) pts+=PTS_PER;
-  if(rec&&rec.cal&&key>=CAL_UNLOCK) pts+=PTS_PER;
+  if(rec&&rec.water)pts+=PTS_PER;
+  if(rec&&rec.pushup&&[1,3,5].includes(keyToDate(key).getDay()))pts+=PTS_PER;
+  if(rec&&rec.cal&&key>=CAL_UNLOCK)pts+=PTS_PER;
   return pts;
 }
-function getMaxDay(key) {
-  return PTS_PER+([1,3,5].includes(keyToDate(key).getDay())?PTS_PER:0)+(key>=CAL_UNLOCK?PTS_PER:0);
-}
-function getTotalPoints() {
-  const data=getData(), today=toKey(new Date()); let t=0;
-  for(const k in data){ if(k<=today) t+=getDayPoints(data[k],k); }
-  return t;
-}
-function getStreak() {
-  const data=getData(); let s=0; const d=new Date();
-  while(true){
-    const k=toKey(d);
-    if(k>toKey(new Date())){d.setDate(d.getDate()-1);continue;}
-    if(!data[k]||getDayPoints(data[k],k)===0) break;
-    s++; d.setDate(d.getDate()-1); if(s>200) break;
-  }
-  return s;
-}
-function getStats() {
-  const data=getData(), today=toKey(new Date()); let days=0,perfect=0;
-  for(const k in data){
-    if(k>today) continue;
-    const pts=getDayPoints(data[k],k);
-    if(pts>0) days++;
-    if(pts===getMaxDay(k)&&pts>0) perfect++;
-  }
-  return {days,perfect};
-}
+function getMaxDay(key){return PTS_PER+([1,3,5].includes(keyToDate(key).getDay())?PTS_PER:0)+(key>=CAL_UNLOCK?PTS_PER:0);}
+function getTotalPoints(){const data=getData(),today=toKey(new Date());let t=0;for(const k in data){if(k<=today)t+=getDayPoints(data[k],k);}return t;}
+function getStreak(){const data=getData();let s=0;const d=new Date();while(true){const k=toKey(d);if(k>toKey(new Date())){d.setDate(d.getDate()-1);continue;}if(!data[k]||getDayPoints(data[k],k)===0)break;s++;d.setDate(d.getDate()-1);if(s>200)break;}return s;}
+function getStats(){const data=getData(),today=toKey(new Date());let days=0,perfect=0;for(const k in data){if(k>today)continue;const pts=getDayPoints(data[k],k);if(pts>0)days++;if(pts===getMaxDay(k)&&pts>0)perfect++;}return{days,perfect};}
 
 // ===================== RENDER =====================
-function render() {
-  const rec=getDayRecord(currentKey), today=toKey(new Date());
-  const isFuture=currentKey>today, dow=keyToDate(currentKey).getDay(), isPushupDay=[1,3,5].includes(dow);
-  const {main,sub}=formatDate(currentKey);
+function render(){
+  const rec=getDayRecord(currentKey),today=toKey(new Date());
+  const isFuture=currentKey>today,dow=keyToDate(currentKey).getDay(),isPushupDay=[1,3,5].includes(dow);
+  const{main,sub}=formatDate(currentKey);
   document.getElementById('dateMain').textContent=main;
   document.getElementById('dateSub').textContent=currentKey===today?'📍 Сегодня · '+sub:sub;
 
@@ -808,19 +619,19 @@ function render() {
     const dotEl=document.getElementById('dot-'+h);
     const isLocked=isFuture||(h==='cal'&&currentKey<CAL_UNLOCK)||(h==='pushup'&&!isPushupDay);
     const isDone=!!rec[h]&&!isLocked;
-    card.classList.toggle('done',isDone); card.classList.toggle('locked',isLocked);
-    if(isLocked){ chkIcon.textContent='🔒'; }
-    else if(isDone){ chkIcon.textContent='✓'; chkEl.classList.add('check-popping'); setTimeout(()=>chkEl.classList.remove('check-popping'),380); }
-    else { chkIcon.textContent=''; }
+    card.classList.toggle('done',isDone);card.classList.toggle('locked',isLocked);
+    if(isLocked)chkIcon.textContent='🔒';
+    else if(isDone){chkIcon.textContent='✓';chkEl.classList.add('check-popping');setTimeout(()=>chkEl.classList.remove('check-popping'),380);}
+    else chkIcon.textContent='';
     dotEl.classList.toggle('on',isDone);
-    if(h==='pushup') document.getElementById('pushup-desc').textContent=isLocked&&!isFuture?'День отдыха 😴':'3 подхода утром';
-    if(h==='cal')    document.getElementById('cal-desc').textContent=currentKey<CAL_UNLOCK?'Активируется '+formatDate(CAL_UNLOCK).main:'Держать 1800–2000 ккал';
+    if(h==='pushup')document.getElementById('pushup-desc').textContent=isLocked&&!isFuture?'День отдыха 😴':'3 подхода утром';
+    if(h==='cal')document.getElementById('cal-desc').textContent=currentKey<CAL_UNLOCK?'Активируется '+formatDate(CAL_UNLOCK).main:'Держать 1800–2000 ккал';
   });
 
-  const todayPts=getDayPoints(rec,currentKey), maxToday=getMaxDay(currentKey);
+  const todayPts=getDayPoints(rec,currentKey),maxToday=getMaxDay(currentKey);
   const ptsEl=document.getElementById('todayPts');
   ptsEl.innerHTML=`${todayPts}<span class="today-max"> / ${maxToday}</span>`;
-  ptsEl.classList.add('score-changed'); setTimeout(()=>ptsEl.classList.remove('score-changed'),280);
+  ptsEl.classList.add('score-changed');setTimeout(()=>ptsEl.classList.remove('score-changed'),280);
 
   const total=getTotalPoints();
   document.getElementById('totalPts').textContent=total;
@@ -828,59 +639,48 @@ function render() {
   document.getElementById('rewardBanner').classList.toggle('visible',total>=THRESHOLD);
   document.getElementById('midRewardBanner').classList.toggle('visible',total>=MID_THRESHOLD&&total<THRESHOLD);
   document.getElementById('streakNum').textContent=getStreak();
-  const {days,perfect}=getStats();
+  const{days,perfect}=getStats();
   document.getElementById('statDays').textContent=days;
   document.getElementById('statPerfect').textContent=perfect;
   document.getElementById('statPct').textContent=Math.round((total/GOAL_PTS)*100)+'%';
   renderWeek();
 }
 
-function renderWeek() {
-  const today=toKey(new Date()), cur=keyToDate(currentKey), dow=cur.getDay();
-  const monday=new Date(cur); monday.setDate(cur.getDate()-(dow===0?6:dow-1));
-  const dayNames=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'], data=getData();
-  const row=document.getElementById('weekRow'); row.innerHTML='';
+function renderWeek(){
+  const today=toKey(new Date()),cur=keyToDate(currentKey),dow=cur.getDay();
+  const monday=new Date(cur);monday.setDate(cur.getDate()-(dow===0?6:dow-1));
+  const dayNames=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],data=getData();
+  const row=document.getElementById('weekRow');row.innerHTML='';
   for(let i=0;i<7;i++){
-    const d=new Date(monday); d.setDate(monday.getDate()+i); const key=toKey(d);
-    const rec=data[key]||{}, pts=getDayPoints(rec,key), maxPts=getMaxDay(key);
-    const div=document.createElement('div'); div.className='week-day';
-    if(pts===maxPts&&pts>0) div.classList.add('perfect');
-    else if(pts>0) div.classList.add('partial');
-    if(key===currentKey) div.classList.add('is-today');
+    const d=new Date(monday);d.setDate(monday.getDate()+i);const key=toKey(d);
+    const rec=data[key]||{},pts=getDayPoints(rec,key),maxPts=getMaxDay(key);
+    const div=document.createElement('div');div.className='week-day';
+    if(pts===maxPts&&pts>0)div.classList.add('perfect');
+    else if(pts>0)div.classList.add('partial');
+    if(key===currentKey)div.classList.add('is-today');
     div.innerHTML=`<div class="wd-name">${dayNames[i]}</div><div class="wd-pts">${key>today?'·':pts||'·'}</div>`;
     div.onclick=()=>{currentKey=key;render();};
     row.appendChild(div);
   }
 }
 
-function confirmReset() {
+async function confirmReset(){
   if(confirm('Сбросить все данные? Это удалит весь прогресс.')){
-    localStorage.removeItem('hb_data'); location.reload();
+    await sb.from('habits').delete().eq('user_id',userId);
+    habitsCache={};
+    localStorage.removeItem('hb_data');
+    render();
   }
 }
 
 // ===================== PARTICLES =====================
-function initParticles() {
-  const canvas=document.getElementById('particles'), ctx=canvas.getContext('2d');
-  let W,H; const pts=[];
+function initParticles(){
+  const canvas=document.getElementById('particles'),ctx=canvas.getContext('2d');
+  let W,H;const pts=[];
   function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
-  window.addEventListener('resize',resize); resize();
-  for(let i=0;i<60;i++) pts.push({
-    x:Math.random()*1200,y:Math.random()*900,r:0.5+Math.random()*1.3,
-    vx:(Math.random()-.5)*.16,vy:(Math.random()-.5)*.16,
-    alpha:.12+Math.random()*.22,
-    color:['#34aaff','#bf5af2','#ffd60a','#ffffff'][Math.floor(Math.random()*4)]
-  });
-  function loop(){
-    ctx.clearRect(0,0,W,H);
-    pts.forEach(p=>{
-      p.x+=p.vx; p.y+=p.vy;
-      if(p.x<0)p.x=W; if(p.x>W)p.x=0; if(p.y<0)p.y=H; if(p.y>H)p.y=0;
-      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle=p.color; ctx.globalAlpha=p.alpha; ctx.fill();
-    });
-    ctx.globalAlpha=1; requestAnimationFrame(loop);
-  }
+  window.addEventListener('resize',resize);resize();
+  for(let i=0;i<60;i++)pts.push({x:Math.random()*1200,y:Math.random()*900,r:0.5+Math.random()*1.3,vx:(Math.random()-.5)*.16,vy:(Math.random()-.5)*.16,alpha:.12+Math.random()*.22,color:['#34aaff','#bf5af2','#ffd60a','#ffffff'][Math.floor(Math.random()*4)]});
+  function loop(){ctx.clearRect(0,0,W,H);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.color;ctx.globalAlpha=p.alpha;ctx.fill();});ctx.globalAlpha=1;requestAnimationFrame(loop);}
   loop();
 }
 </script>
