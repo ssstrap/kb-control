@@ -963,7 +963,7 @@ textarea { resize: none; height: 64px; font-size: 12px; line-height: 1.6; }
   <div class="section-label">Новый расход</div>
 
   <div class="field-group">
-    <label>Дата <button class="date-today" onclick="setToday()">> сегодня</button></label>
+    <label>Дата <button class="date-today" onclick="setToday()">> сегодня</button> <button class="date-today" id="lockBtn" onclick="toggleLockDate()" style="margin-left:4px">🔓 закрепить</button></label>
     <input type="date" id="f_date">
   </div>
 
@@ -1088,6 +1088,7 @@ let accessToken = null;
 let sheetId = localStorage.getItem('kb_rashody_sheet_id') || '';
 let recent = [];
 let tokenClient = null;
+let dateLocked = false;
 
 const DAYS_RU = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
 
@@ -1176,6 +1177,20 @@ function updateDateDisplay() {
 
 document.addEventListener('change', (e) => { if (e.target.id === 'f_date') updateDateDisplay(); });
 
+function toggleLockDate() {
+  dateLocked = !dateLocked;
+  const btn = document.getElementById('lockBtn');
+  if (dateLocked) {
+    btn.textContent = '🔒 закреплено';
+    btn.style.color = 'var(--accent)';
+    toast('Дата закреплена: ' + document.getElementById('f_date').value, 'success');
+  } else {
+    btn.textContent = '🔓 закрепить';
+    btn.style.color = '';
+    toast('Дата откреплена', 'success');
+  }
+}
+
 /* ── Sheets API ── */
 async function sheetsGet(range) {
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(range)}`;
@@ -1260,7 +1275,7 @@ async function submitEntry() {
     document.getElementById('f_desc').value = '';
     document.getElementById('f_whom').value = '';
     document.getElementById('f_sum').value = '';
-    setToday();
+    if (!dateLocked) setToday();
 
   } catch(e) {
     toast('Ошибка: ' + e.message.slice(0, 80), 'error');
