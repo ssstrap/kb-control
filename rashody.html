@@ -882,6 +882,33 @@ textarea { resize: none; height: 64px; font-size: 12px; line-height: 1.6; }
   95% { transform: translateX(-2px); }
   96% { transform: none; }
 }
+.date-nav-btn {
+  background: rgba(0,255,65,0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.date-nav-btn:hover {
+  border-color: var(--accent-dim);
+  background: rgba(0,255,65,0.08);
+  text-shadow: 0 0 8px var(--accent);
+}
+
+.date-nav-btn:active {
+  transform: scale(0.92);
+}
 </style>
 </head>
 <body>
@@ -963,8 +990,14 @@ textarea { resize: none; height: 64px; font-size: 12px; line-height: 1.6; }
   <div class="section-label">Новый расход</div>
 
   <div class="field-group">
-    <label>Дата <button class="date-today" onclick="setToday()">> сегодня</button> <button class="date-today" id="lockBtn" onclick="toggleLockDate()" style="margin-left:4px">🔓 закрепить</button></label>
-    <input type="date" id="f_date">
+    <label>Дата</label>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <button class="date-nav-btn" onclick="shiftDate(-1)">◀</button>
+      <div id="dateDisplay2" style="flex:1;text-align:center;font-family:var(--font-mono);font-size:15px;color:var(--text);padding:12px 0;background:rgba(0,255,65,0.02);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;user-select:none;" onclick="setToday()">—</div>
+      <button class="date-nav-btn" onclick="shiftDate(1)">▶</button>
+      <button class="date-nav-btn" id="lockBtn" onclick="toggleLockDate()" style="font-size:14px;min-width:40px;" title="Закрепить дату">🔓</button>
+    </div>
+    <input type="hidden" id="f_date">
   </div>
 
   <div class="field-group">
@@ -1164,7 +1197,18 @@ function initMain() {
 }
 
 /* ── Date ── */
-function setToday() { document.getElementById('f_date').value = new Date().toISOString().split('T')[0]; updateDateDisplay(); }
+function setToday() {
+  document.getElementById('f_date').value = new Date().toISOString().split('T')[0];
+  updateDateDisplay();
+}
+
+function shiftDate(dir) {
+  const input = document.getElementById('f_date');
+  let d = input.value ? new Date(input.value + 'T00:00:00') : new Date();
+  d.setDate(d.getDate() + dir);
+  input.value = d.toISOString().split('T')[0];
+  updateDateDisplay();
+}
 
 function updateDateDisplay() {
   const ds = document.getElementById('f_date').value;
@@ -1172,7 +1216,11 @@ function updateDateDisplay() {
   const [y,m,d] = ds.split('-');
   const date = new Date(+y, +m-1, +d);
   const day = DAYS_RU[date.getDay()];
+  const today = new Date().toISOString().split('T')[0];
+  const label = ds === today ? 'сегодня' : '';
   document.getElementById('dateDisplay').textContent = `${+d}.${m}.${y} // ${day}`;
+  const dd2 = document.getElementById('dateDisplay2');
+  if (dd2) dd2.textContent = `${+d}.${m}.${y}  ${day}` + (label ? `  ·  ${label}` : '');
 }
 
 document.addEventListener('change', (e) => { if (e.target.id === 'f_date') updateDateDisplay(); });
