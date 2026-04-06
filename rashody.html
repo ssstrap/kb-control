@@ -74,6 +74,7 @@ html.light .stat-box .stat-value { text-shadow: none; }
 html.light .entry-card .ec-sum { text-shadow: none; }
 html.light .google-btn { background: var(--surface); border-color: var(--border); color: var(--text); }
 html.light .google-btn:hover { border-color: var(--accent); }
+html.light input[type="date"] { color-scheme: light; }
 html.light #toast { background: var(--surface); }
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -433,7 +434,14 @@ input, select, textarea {
   padding: 12px 14px;
   outline: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  -webkit-appearance: none;
+}
+
+select { -webkit-appearance: none; }
+
+input[type="date"] {
+  -webkit-appearance: auto;
+  appearance: auto;
+  color-scheme: dark;
 }
 
 input::placeholder, textarea::placeholder {
@@ -990,14 +998,8 @@ textarea { resize: none; height: 64px; font-size: 12px; line-height: 1.6; }
   <div class="section-label">Новый расход</div>
 
   <div class="field-group">
-    <label>Дата</label>
-    <div style="display:flex;align-items:center;gap:6px;">
-      <button class="date-nav-btn" onclick="shiftDate(-1)">◀</button>
-      <div id="dateDisplay2" style="flex:1;text-align:center;font-family:var(--font-mono);font-size:15px;color:var(--text);padding:12px 0;background:rgba(0,255,65,0.02);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;user-select:none;" onclick="setToday()">—</div>
-      <button class="date-nav-btn" onclick="shiftDate(1)">▶</button>
-      <button class="date-nav-btn" id="lockBtn" onclick="toggleLockDate()" style="font-size:14px;min-width:40px;" title="Закрепить дату">🔓</button>
-    </div>
-    <input type="hidden" id="f_date">
+    <label>Дата <button class="date-today" onclick="setToday()">> сегодня</button> <button class="date-today" id="lockBtn" onclick="toggleLockDate()" style="margin-left:4px">🔓 закрепить</button></label>
+    <input type="date" id="f_date">
   </div>
 
   <div class="field-group">
@@ -1202,25 +1204,13 @@ function setToday() {
   updateDateDisplay();
 }
 
-function shiftDate(dir) {
-  const input = document.getElementById('f_date');
-  let d = input.value ? new Date(input.value + 'T00:00:00') : new Date();
-  d.setDate(d.getDate() + dir);
-  input.value = d.toISOString().split('T')[0];
-  updateDateDisplay();
-}
-
 function updateDateDisplay() {
   const ds = document.getElementById('f_date').value;
   if (!ds) return;
   const [y,m,d] = ds.split('-');
   const date = new Date(+y, +m-1, +d);
   const day = DAYS_RU[date.getDay()];
-  const today = new Date().toISOString().split('T')[0];
-  const label = ds === today ? 'сегодня' : '';
   document.getElementById('dateDisplay').textContent = `${+d}.${m}.${y} // ${day}`;
-  const dd2 = document.getElementById('dateDisplay2');
-  if (dd2) dd2.textContent = `${+d}.${m}.${y}  ${day}` + (label ? `  ·  ${label}` : '');
 }
 
 document.addEventListener('change', (e) => { if (e.target.id === 'f_date') updateDateDisplay(); });
